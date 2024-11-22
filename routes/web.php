@@ -63,7 +63,9 @@ use App\Http\Controllers\EmployeeIdentityController;
 use App\Http\Controllers\MaterialCategoryController;
 use App\Http\Controllers\RepaymentCategoryController;
 use App\Http\Controllers\FinancialStatementController;
+use App\Http\Controllers\InventoryAdjustController;
 use App\Http\Controllers\MaterialSubCategoryController;
+use App\Http\Controllers\StockAdjustController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +148,8 @@ Route::resource('/deduction', DeductionController::class)->middleware(['auth', '
 Route::resource('/day', DayController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/holiday', HolidayController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/payroll', PayrollController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/stock_adjust', StockAdjustController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/inventory_adjust', InventoryAdjustController::class)->middleware(['auth', 'check.permission']);
 Route::get('/checklog', [ChecklogController::class, 'index'])->name('checklog.index')->middleware(['auth', 'check.permission']);
 Route::get('/checklog/create', [ChecklogController::class, 'create'])->name('checklog.create')->middleware(['auth', 'check.permission']);
 Route::post('/checklog', [ChecklogController::class, 'store'])->name('checklog.store')->middleware(['auth', 'check.permission']);

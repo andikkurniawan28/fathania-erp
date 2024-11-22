@@ -357,8 +357,8 @@
                 in_array('material_sub_category.index', $permissions) ||
                 in_array('material.index', $permissions) ||
                 in_array('service.index', $permissions) ||
-                in_array('vendor.index', $permissions) ||
-                in_array('supplier.index', $permissions)
+                in_array('stock_adjust.index', $permissions) ||
+                in_array('inventory_adjust.index', $permissions)
             )
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Inventory</span>
@@ -372,8 +372,7 @@
                 in_array('material_sub_category.index', $permissions) ||
                 in_array('material.index', $permissions) ||
                 in_array('service.index', $permissions) ||
-                in_array('supplier.index', $permissions) ||
-                in_array('vendor.index', $permissions)
+                in_array('stock_adjust.index', $permissions)
             )
             <li
                 class="menu-item
@@ -383,8 +382,7 @@
                 @yield('material_sub_category-active')
                 @yield('material-active')
                 @yield('service-active')
-                @yield('supplier-active')
-                @yield('vendor-active')
+                @yield('stock_adjust-active')
             ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-folder"></i>
@@ -439,18 +437,10 @@
                             </a>
                         </li>
                     @endif
-                    @if (in_array('supplier.index', $permissions))
-                        <li class="menu-item @yield('supplier-active')">
-                            <a href="{{ route('supplier.index') }}" class="menu-link">
-                                <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'supplier')) }}
-                                </div>
-                            </a>
-                        </li>
-                    @endif
-                    @if (in_array('vendor.index', $permissions))
-                    <li class="menu-item @yield('vendor-active')">
-                        <a href="{{ route('vendor.index') }}" class="menu-link">
-                            <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'vendor')) }}
+                    @if (in_array('stock_adjust.index', $permissions))
+                    <li class="menu-item @yield('stock_adjust-active')">
+                        <a href="{{ route('stock_adjust.index') }}" class="menu-link">
+                            <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'stock_adjust')) }}
                             </div>
                         </a>
                     </li>
@@ -460,18 +450,46 @@
         @endif
 
         @if (
+                in_array('inventory_adjust.index', $permissions)
+            )
+            <li
+                class="menu-item
+                @yield('inventory_adjust-active')
+            ">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-transfer-alt"></i>
+                    <div data-i18n="Analytics">{{ ucwords(str_replace('_', ' ', 'transaction')) }}</div>
+                </a>
+                <ul class="menu-sub">
+                    @if (in_array('inventory_adjust.index', $permissions))
+                        <li class="menu-item @yield('inventory_adjust-active')">
+                            <a href="{{ route('inventory_adjust.index') }}" class="menu-link">
+                                <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'inventory_adjust')) }}
+                                </div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li>
+        @endif
+
+        @if (
                 in_array('region.index', $permissions) ||
                 in_array('business.index', $permissions) ||
+                in_array('vendor.index', $permissions) ||
+                in_array('supplier.index', $permissions) ||
                 in_array('customer.index', $permissions)
             )
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">CRM</span>
+            <span class="menu-header-text">Third Party</span>
         </li>
         @endif
 
         @if (
                 in_array('region.index', $permissions) ||
                 in_array('business.index', $permissions) ||
+                in_array('vendor.index', $permissions) ||
+                in_array('supplier.index', $permissions) ||
                 in_array('customer.index', $permissions)
             )
             <li
@@ -479,6 +497,8 @@
                 @yield('region-active')
                 @yield('business-active')
                 @yield('customer-active')
+                @yield('supplier-active')
+                @yield('vendor-active')
             ">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-folder"></i>
@@ -500,6 +520,22 @@
                                 </div>
                             </a>
                         </li>
+                    @endif
+                    @if (in_array('supplier.index', $permissions))
+                        <li class="menu-item @yield('supplier-active')">
+                            <a href="{{ route('supplier.index') }}" class="menu-link">
+                                <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'supplier')) }}
+                                </div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (in_array('vendor.index', $permissions))
+                    <li class="menu-item @yield('vendor-active')">
+                        <a href="{{ route('vendor.index') }}" class="menu-link">
+                            <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'vendor')) }}
+                            </div>
+                        </a>
+                    </li>
                     @endif
                     @if (in_array('customer.index', $permissions))
                     <li class="menu-item @yield('customer-active')">

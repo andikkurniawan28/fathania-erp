@@ -35,6 +35,7 @@ use App\Models\Permission;
 use App\Models\SubAccount;
 use App\Models\MainAccount;
 use App\Models\PaymentTerm;
+use App\Models\StockAdjust;
 use App\Models\AccountGroup;
 use App\Models\MaritalStatus;
 use App\Models\NormalBalance;
@@ -268,6 +269,20 @@ class DatabaseSeeder extends Seeder
             ['name' => ucfirst(str_replace('_', ' ', 'show_customer')), 'route' => 'customer.show'],
             ['name' => ucfirst(str_replace('_', ' ', 'update_customer')), 'route' => 'customer.update'],
             ['name' => ucfirst(str_replace('_', ' ', 'delete_customer')), 'route' => 'customer.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_stock_adjust')), 'route' => 'stock_adjust.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_stock_adjust')), 'route' => 'stock_adjust.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_stock_adjust')), 'route' => 'stock_adjust.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_stock_adjust')), 'route' => 'stock_adjust.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_stock_adjust')), 'route' => 'stock_adjust.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_stock_adjust')), 'route' => 'stock_adjust.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_stock_adjust')), 'route' => 'stock_adjust.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_inventory_adjust')), 'route' => 'inventory_adjust.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_inventory_adjust')), 'route' => 'inventory_adjust.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_inventory_adjust')), 'route' => 'inventory_adjust.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_inventory_adjust')), 'route' => 'inventory_adjust.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_inventory_adjust')), 'route' => 'inventory_adjust.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_inventory_adjust')), 'route' => 'inventory_adjust.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_inventory_adjust')), 'route' => 'inventory_adjust.destroy'],
             // ['name' => ucfirst(str_replace('_', ' ', 'list_of_department')), 'route' => 'department.index'],
             // ['name' => ucfirst(str_replace('_', ' ', 'create_department')), 'route' => 'department.create'],
             // ['name' => ucfirst(str_replace('_', ' ', 'save_department')), 'route' => 'department.store'],
@@ -1324,6 +1339,12 @@ class DatabaseSeeder extends Seeder
         //     ]);
         //     $startDate->addDay();
         // }
+
+        $stock_adjusts = [
+            ['name' => ucwords(str_replace('_', ' ', 'hilang')), "stock_normal_balance_id" => "C"],
+            ['name' => ucwords(str_replace('_', ' ', 'rusak')), "stock_normal_balance_id" => "C"],
+        ];
+        StockAdjust::insert($stock_adjusts);
 
     }
 }
