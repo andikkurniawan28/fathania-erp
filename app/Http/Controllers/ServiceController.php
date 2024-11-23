@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\Setup;
 use App\Models\Service;
-use App\Models\Warehouse;
 use Illuminate\Http\Request;
-use App\Models\ServiceSubCategory;
 use Yajra\DataTables\Facades\DataTables;
 
 class ServiceController extends Controller

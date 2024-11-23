@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ApiCountSalaryController;
 use App\Http\Controllers\ApiGenerateInvoiceIDController;
 use App\Http\Controllers\ApiGenerateValidUntilController;
 use App\Http\Controllers\ApiGenerateRepaymentIDController;
@@ -39,5 +38,3 @@ Route::get("generate_repayment_category_info/{repayment_category_id}", ApiGenera
     ->name("api.generate_repayment_category_info");
 Route::get("generate_unpaid_invoice/{repayment_category_id}/{supplier_customer_id}", ApiGenerateUnpaidInvoiceController::class)
     ->name("api.generate_unpaid_invoice_info");
-Route::get("count_salary/{employee_id}/{from}/{to}", ApiCountSalaryController::class)
-    ->name("api.count_salary");
