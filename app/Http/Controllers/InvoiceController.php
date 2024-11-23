@@ -5,18 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Setup;
 use App\Models\Ledger;
 use App\Models\Account;
+use App\Models\Invoice;
 use App\Models\TaxRate;
 use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Models\PaymentTerm;
-use App\Models\Invoice;
 use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
 use App\Models\InvoiceDetail;
-use Illuminate\Support\Facades\DB;
 use App\Models\InvoiceCategory;
+use Yajra\DataTables\DataTables;
+use App\Models\InventoryMovement;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceController extends Controller
 {
@@ -204,6 +205,15 @@ class InvoiceController extends Controller
                 'total' => $detail['total'],
             ]);
             Material::countStock($detail['material_id'], $request->warehouse_id, $stock_normal_balance_id, $detail['qty']);
+            InventoryMovement::create([
+                'invoice_id' => $request->id,
+                'user_id' => $request->user_id,
+                'material_id' => $detail['material_id'],
+                'warehouse_id' => $detail['warehouse_id'],
+                'in' => ($stock_normal_balance_id == "D") ? $detail['qty'] : 0,
+                'out' => ($stock_normal_balance_id == "C") ? $detail['qty'] : 0,
+                'description' => "{$invoice_category->name}",
+            ]);
             $item_order++;
         }
     }
