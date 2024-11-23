@@ -6,11 +6,13 @@ use App\Models\Setup;
 use App\Models\Ledger;
 use App\Models\Account;
 use App\Models\Invoice;
+use App\Models\Payable;
 use App\Models\TaxRate;
 use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Supplier;
 use App\Models\Warehouse;
+use App\Models\Receivable;
 use App\Models\PaymentTerm;
 use Illuminate\Http\Request;
 use App\Models\InvoiceDetail;
@@ -208,8 +210,8 @@ class InvoiceController extends Controller
             InventoryMovement::create([
                 'invoice_id' => $request->id,
                 'user_id' => $request->user_id,
+                'warehouse_id' => $request->warehouse_id,
                 'material_id' => $detail['material_id'],
-                'warehouse_id' => $detail['warehouse_id'],
                 'in' => ($stock_normal_balance_id == "D") ? $detail['qty'] : 0,
                 'out' => ($stock_normal_balance_id == "C") ? $detail['qty'] : 0,
                 'description' => "{$invoice_category->name}",
@@ -295,9 +297,26 @@ class InvoiceController extends Controller
     public static function updatePayableOrReceivable($request, $invoice_category)
     {
         if ($request->left > 0) {
+
             $invoice_category->deal_with == "suppliers"
                 ? Supplier::increasePayable($request->supplier_id, $request->left)
                 : Customer::increaseReceivable($request->customer_id, $request->left);
+
+            $invoice_category->deal_with == "suppliers"
+                ? Payable::create([
+                    "description" => "{$invoice_category->name} - {$request->id}",
+                    "user_id" => $request->user_id,
+                    "invoice_id" => $request->id,
+                    "supplier_id" => $request->supplier_id,
+                    "amount" => $request->left,
+                ])
+                : Receivable::create([
+                    "description" => "{$invoice_category->name} - {$request->id}",
+                    "user_id" => $request->user_id,
+                    "invoice_id" => $request->id,
+                    "customer_id" => $request->customer_id,
+                    "amount" => $request->left,
+                ]);
         }
     }
 

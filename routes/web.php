@@ -14,6 +14,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\JournalController;
+use App\Http\Controllers\PayableController;
 use App\Http\Controllers\PostingController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TaxRateController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RepaymentController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\ReceivableController;
 use App\Http\Controllers\SubAccountController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\MainAccountController;
@@ -56,16 +58,25 @@ use App\Http\Controllers\MaterialSubCategoryController;
 |
 */
 
+// Dashboard
+Route::get('/', DashboardController::class)->name('dashboard')->middleware(['auth']);
+
+// Auth
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'loginProcess'])->name('loginProcess');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/change_datetime', [AuthController::class, 'changeDatetime'])->name('change_datetime');
-Route::get('/', DashboardController::class)->name('dashboard')->middleware(['auth']);
+
+// Setup
 Route::get('/setup', [SetupController::class, 'index'])->name('setup.index')->middleware(['auth', 'check.permission']);
 Route::put('/setup/{id}', [SetupController::class, 'update'])->name('setup.update')->middleware(['auth', 'check.permission']);
+
+// Access
 Route::resource('/role', RoleController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/user', UserController::class)->middleware(['auth', 'check.permission']);
 Route::get('/activity_log', ActivityLogController::class)->name('activity_log')->middleware(['auth', 'check.permission']);
+
+// Financial
 Route::resource('/cash_flow_category', CashFlowCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/financial_statement', FinancialStatementController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/normal_balance', NormalBalanceController::class)->middleware(['auth', 'check.permission']);
@@ -75,6 +86,7 @@ Route::resource('/sub_account', SubAccountController::class)->middleware(['auth'
 Route::resource('/account', AccountController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/bank', BankController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/tax_rate', TaxRateController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/payment_term', PaymentTermController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/journal', JournalController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/budget', BudgetController::class)->middleware(['auth', 'check.permission']);
 Route::get('/budget_refresh/{budget_id}', BudgetRefreshController::class)->name('budget.refresh')->middleware(['auth', 'check.permission']);
@@ -88,18 +100,14 @@ Route::get('/cash_flow', [CashFlowController::class, 'index'])->name('cash_flow.
 Route::get('/cash_flow/data/{year}/{month}', [CashFlowController::class, 'data'])->name('cash_flow.data');
 Route::post('/closing_entry', ClosingEntryController::class)->name('closing_entry');
 Route::post('/posting', PostingController::class)->name('posting');
+
+// Inventory
 Route::resource('/warehouse', WarehouseController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/unit', UnitController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/material_category', MaterialCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/material_sub_category', MaterialSubCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/material', MaterialController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/service', ServiceController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/payment_term', PaymentTermController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/region', RegionController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/business', BusinessController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/supplier', SupplierController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/customer', CustomerController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/vendor', VendorController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/invoice_category', InvoiceCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/repayment_category', RepaymentCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/invoice', InvoiceController::class)->middleware(['auth', 'check.permission']);
@@ -108,5 +116,16 @@ Route::resource('/stock_adjust', StockAdjustController::class)->middleware(['aut
 Route::resource('/inventory_adjust', InventoryAdjustController::class)->middleware(['auth', 'check.permission']);
 Route::get('/inventory_movement', [InventoryMovementController::class, 'index'])->name('inventory_movement.index')->middleware(['auth', 'check.permission']);
 Route::get('/inventory_movement/data/{material_id}/{warehouse_id}/{start_date}/{end_date}', [InventoryMovementController::class, 'data'])->name('inventory_movement.data');
+
+// Third Party
+Route::resource('/region', RegionController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/business', BusinessController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/supplier', SupplierController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/customer', CustomerController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/vendor', VendorController::class)->middleware(['auth', 'check.permission']);
+Route::get('/payable', [PayableController::class, 'index'])->name('payable.index')->middleware(['auth', 'check.permission']);
+Route::get('/payable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [PayableController::class, 'data'])->name('payable.data');
+Route::get('/receivable', [ReceivableController::class, 'index'])->name('receivable.index')->middleware(['auth', 'check.permission']);
+Route::get('/receivable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [ReceivableController::class, 'data'])->name('receivable.data');
 
 

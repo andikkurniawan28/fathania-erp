@@ -11,12 +11,13 @@ use App\Models\Material;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Models\PaymentTerm;
-use App\Models\InventoryAdjust;
-use Illuminate\Http\Request;
-use Yajra\DataTables\DataTables;
-use App\Models\InventoryAdjustEntry;
-use Illuminate\Support\Facades\DB;
 use App\Models\StockAdjust;
+use Illuminate\Http\Request;
+use App\Models\InventoryAdjust;
+use Yajra\DataTables\DataTables;
+use App\Models\InventoryMovement;
+use Illuminate\Support\Facades\DB;
+use App\Models\InventoryAdjustEntry;
 
 class InventoryAdjustController extends Controller
 {
@@ -162,6 +163,15 @@ class InventoryAdjustController extends Controller
                 'total' => $detail['total'],
             ]);
             Material::countStock($detail['material_id'], $request->warehouse_id, $stock_normal_balance_id, $detail['qty']);
+            InventoryMovement::create([
+                'inventory_adjust_id' => $inventory_adjust->id,
+                'user_id' => $request->user_id,
+                'warehouse_id' => $request->warehouse_id,
+                'material_id' => $detail['material_id'],
+                'in' => ($stock_normal_balance_id == "D") ? $detail['qty'] : 0,
+                'out' => ($stock_normal_balance_id == "C") ? $detail['qty'] : 0,
+                'description' => "{$inventory_adjust->stock_adjust->name}",
+            ]);
             $item_order++;
         }
     }

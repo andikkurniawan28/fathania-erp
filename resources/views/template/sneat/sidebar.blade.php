@@ -525,7 +525,9 @@
                 in_array('business.index', $permissions) ||
                 in_array('vendor.index', $permissions) ||
                 in_array('supplier.index', $permissions) ||
-                in_array('customer.index', $permissions)
+                in_array('customer.index', $permissions) ||
+                in_array('payable.index', $permissions) ||
+                in_array('receivable.index', $permissions)
             )
             <li
                 class="menu-item
@@ -583,6 +585,40 @@
                 </ul>
             </li>
         @endif
+
+        @if (
+            in_array('payable.index', $permissions) ||
+            in_array('receivable.index', $permissions)
+        )
+        <li
+            class="menu-item
+            @yield('payable-active')
+            @yield('receivable-active')
+        ">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-bar-chart"></i>
+                <div data-i18n="Analytics">{{ ucwords(str_replace('_', ' ', 'report')) }}</div>
+            </a>
+            <ul class="menu-sub">
+                @if (in_array('payable.index', $permissions))
+                    <li class="menu-item @yield('payable-active')">
+                        <a href="{{ route('payable.index') }}" class="menu-link">
+                            <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'payable')) }}
+                            </div>
+                        </a>
+                    </li>
+                @endif
+                @if (in_array('receivable.index', $permissions))
+                    <li class="menu-item @yield('receivable-active')">
+                        <a href="{{ route('receivable.index') }}" class="menu-link">
+                            <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'receivable')) }}
+                            </div>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+    @endif
 
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text"></span>

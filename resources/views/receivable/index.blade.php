@@ -1,10 +1,10 @@
 @extends('template.sneat.master')
 
 @section('title')
-    {{ ucwords(str_replace('_', ' ', 'inventory_movement')) }}
+    {{ ucwords(str_replace('_', ' ', 'receivable')) }}
 @endsection
 
-@section('inventory_movement-active')
+@section('receivable-active')
     {{ 'active' }}
 @endsection
 
@@ -27,21 +27,12 @@
                 <form action="{{ route('posting') }}" method="POST">
                 @csrf @method("POST")
                 <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label>Material</label>
-                        <select id="material_select" class="form-control select2" name="material_id">
-                            <option value="">Select Material</option>
-                            @foreach ($materials as $material)
-                                <option value="{{ $material->id }}">{{ $material->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>Warehouse</label>
-                        <select id="warehouse_select" class="form-control select2" name="warehouse_id">
-                            <option value="">Select Warehouse</option>
-                            @foreach ($warehouses as $warehouse)
-                                <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+                    <div class="col-md-4">
+                        <label>Customer</label>
+                        <select id="customer_select" class="form-control select2" name="third_party_id">
+                            <option value="">Select Customer</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -72,13 +63,12 @@
                 </form>
 
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="inventory_movement_table" width="100%">
+                    <table class="table table-bordered" id="receivable_table" width="100%">
                         <thead>
                             <tr>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'date')) }}</th>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'description')) }}</th>
-                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'in')) }}</th>
-                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'out')) }}</th>
+                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'amount')) }}</th>
                                 <th class="text-right">{{ ucwords(str_replace('_', ' ', 'balance')) }}</th>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'user')) }}</th>
                             </tr>
@@ -95,20 +85,14 @@
     <script type="text/javascript">
         $(document).ready(function() {
             // Inisialisasi Select2
-            $('#material_select').select2({
+            $('#customer_select').select2({
                 theme: 'bootstrap',
-                placeholder: "Select a material",
-                allowClear: true // Mengaktifkan opsi clearable
-            });
-
-            $('#warehouse_select').select2({
-                theme: 'bootstrap',
-                placeholder: "Select a warehouse",
+                placeholder: "Select an customer",
                 allowClear: true // Mengaktifkan opsi clearable
             });
 
             // Inisialisasi DataTable
-            var table = $('#inventory_movement_table').DataTable({
+            var table = $('#receivable_table').DataTable({
                 layout: {
                     bottomStart: {
                         buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5'],
@@ -120,7 +104,7 @@
                     url: "",
                     type: "GET",
                     data: function(d) {
-                        d.material_id = $('#material_select').val();
+                        d.third_party_id = $('#customer_select').val();
                         d.start_date = $('#start_date').val();
                         d.end_date = $('#end_date').val();
                     }
@@ -139,18 +123,8 @@
                         class: 'text-left'
                     },
                     {
-                        data: 'in',
-                        name: 'in',
-                        class: 'text-right',
-                        render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
-                        }
-                    },
-                    {
-                        data: 'out',
-                        name: 'out',
+                        data: 'amount',
+                        name: 'amount',
                         class: 'text-right',
                         render: function(data, type, row) {
                             return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
@@ -196,23 +170,23 @@
 
             // Event Listener untuk Filter Button
             $('#filter_button').on('click', function() {
-                var material_id = $('#material_select').val();
-                var warehouse_id = $('#warehouse_select').val();
+                var third_party = "customer";
+                var third_party_id = $('#customer_select').val();
                 var start_date = $('#start_date').val();
                 var end_date = $('#end_date').val();
 
-                if (material_id && start_date && end_date) {
+                if (third_party_id && start_date && end_date) {
                     // Set ajax URL dengan parameter yang dibutuhkan dan reload DataTable
                     var url =
-                        "{{ route('inventory_movement.data', ['material_id' => ':material_id', 'warehouse_id' => ':warehouse_id', 'start_date' => ':start_date', 'end_date' => ':end_date']) }}";
-                    url = url.replace(':material_id', material_id)
-                        .replace(':warehouse_id', warehouse_id)
+                        "{{ route('receivable.data', ['third_party' => ':third_party', 'third_party_id' => ':third_party_id', 'start_date' => ':start_date', 'end_date' => ':end_date']) }}";
+                    url = url.replace(':third_party', third_party)
+                        .replace(':third_party_id', third_party_id)
                         .replace(':start_date', start_date)
                         .replace(':end_date', end_date);
 
                     table.ajax.url(url).load();
                 } else {
-                    alert('Please select an material and specify both start and end dates.');
+                    alert('Please select an customer and specify both start and end dates.');
                 }
             });
 

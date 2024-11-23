@@ -6,10 +6,12 @@ use auth;
 use App\Models\Setup;
 use App\Models\Ledger;
 use App\Models\Account;
+use App\Models\Invoice;
+use App\Models\Payable;
 use App\Models\Customer;
 use App\Models\Supplier;
 use App\Models\Repayment;
-use App\Models\Invoice;
+use App\Models\Receivable;
 use Illuminate\Http\Request;
 use App\Models\RepaymentDetail;
 use Yajra\DataTables\DataTables;
@@ -209,6 +211,22 @@ class RepaymentController extends Controller
         $repayment_category->deal_with == "suppliers"
             ? Supplier::decreasePayable($request->supplier_id, $request->grand_total)
             : Customer::decreaseReceivable($request->customer_id, $request->grand_total);
+
+        $repayment_category->deal_with == "suppliers"
+                ? Payable::create([
+                    "description" => "{$repayment_category->name} - {$request->id}",
+                    "user_id" => $request->user_id,
+                    "repayment_id" => $request->id,
+                    "supplier_id" => $request->supplier_id,
+                    "amount" => $request->grand_total * -1,
+                ])
+                : Receivable::create([
+                    "description" => "{$repayment_category->name} - {$request->id}",
+                    "user_id" => $request->user_id,
+                    "repayment_id" => $request->id,
+                    "customer_id" => $request->customer_id,
+                    "amount" => $request->grand_total * -1,
+                ]);
     }
 
 }

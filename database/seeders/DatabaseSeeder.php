@@ -273,6 +273,8 @@ class DatabaseSeeder extends Seeder
             ['name' => ucfirst(str_replace('_', ' ', 'update_inventory_adjust')), 'route' => 'inventory_adjust.update'],
             ['name' => ucfirst(str_replace('_', ' ', 'delete_inventory_adjust')), 'route' => 'inventory_adjust.destroy'],
             ['name' => ucfirst(str_replace('_', ' ', 'list_of_inventory_movement')), 'route' => 'inventory_movement.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_payable')), 'route' => 'payable.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_receivable')), 'route' => 'receivable.index'],
         ];
         Feature::insert($features);
 
