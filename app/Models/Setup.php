@@ -23,6 +23,11 @@ class Setup extends Model
         return $this->belongsTo(Account::class, 'retained_earning_id');
     }
 
+    public function material_inventory()
+    {
+        return $this->belongsTo(Account::class, 'material_inventory_id');
+    }
+
     public static function dailyWage()
     {
         return self::latest()->first()->daily_wage;

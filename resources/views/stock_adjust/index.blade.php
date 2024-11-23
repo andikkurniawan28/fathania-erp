@@ -25,6 +25,7 @@
                                 <th>{{ strtoupper(str_replace('_', ' ', 'id')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'name')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'normal_balance')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'profit_loss_account')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'manage')) }}</th>
                             </tr>
                         </thead>
@@ -34,6 +35,7 @@
                                     <td>{{ $stock_adjust->id }}</td>
                                     <td>{{ $stock_adjust->name }}</td>
                                     <td>{{ $stock_adjust->stock_normal_balance->name }}</td>
+                                    <td>{{ $stock_adjust->profit_loss_account->name }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="manage">
                                             <a href="{{ route('stock_adjust.edit', $stock_adjust->id) }}" class="btn btn-secondary btn-sm">Edit</a>

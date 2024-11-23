@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\Setup;
 use App\Models\StockAdjust;
 use Illuminate\Http\Request;
@@ -26,7 +27,8 @@ class StockAdjustController extends Controller
     {
         $setup = Setup::init();
         $normal_balances = NormalBalance::all();
-        return view('stock_adjust.create', compact('setup', 'normal_balances'));
+        $accounts = Account::all();
+        return view('stock_adjust.create', compact('setup', 'normal_balances', 'accounts'));
     }
 
     /**
@@ -37,6 +39,7 @@ class StockAdjustController extends Controller
         $validated = $request->validate([
             "name" => "required|unique:stock_adjusts",
             "stock_normal_balance_id" => "required|string|exists:normal_balances,id",
+            "profit_loss_account_id" => "required|string|exists:accounts,id",
         ]);
         $stock_adjust = StockAdjust::create($validated);
         return redirect()->back()->with("success", "StockAdjust has been created");
@@ -58,7 +61,8 @@ class StockAdjustController extends Controller
         $setup = Setup::init();
         $stock_adjust = StockAdjust::findOrFail($id);
         $normal_balances = NormalBalance::all();
-        return view('stock_adjust.edit', compact('setup', 'stock_adjust', 'normal_balances'));
+        $accounts = Account::all();
+        return view('stock_adjust.edit', compact('setup', 'stock_adjust', 'normal_balances', 'accounts'));
     }
 
     /**
@@ -70,6 +74,7 @@ class StockAdjustController extends Controller
         $validated = $request->validate([
             'name' => 'required|unique:stock_adjusts,name,' . $stock_adjust->id,
             "stock_normal_balance_id" => "required|string|exists:normal_balances,id",
+            "profit_loss_account_id" => "required|string|exists:accounts,id",
         ]);
         $stock_adjust->update($validated);
         return redirect()->route('stock_adjust.index')->with("success", "StockAdjust has been updated");

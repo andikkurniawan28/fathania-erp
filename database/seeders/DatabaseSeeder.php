@@ -388,7 +388,7 @@ class DatabaseSeeder extends Seeder
             ["id" => "10411", "sub_account_id" => "1041", "cash_flow_category_id" => 2, "name" => "Bangunan Pabrik", "initial_balance" => 0, "is_payment_gateway" => 0],
             ["id" => "10511", "sub_account_id" => "1051", "cash_flow_category_id" => 2, "name" => "Peralatan Produksi", "initial_balance" => 0, "is_payment_gateway" => 0],
             ["id" => "10611", "sub_account_id" => "1061", "cash_flow_category_id" => 2, "name" => "Inventaris Kantor", "initial_balance" => 0, "is_payment_gateway" => 0],
-            ["id" => "10711", "sub_account_id" => "1071", "cash_flow_category_id" => 1, "name" => "Persediaan Barang Dagang", "initial_balance" => 0, "is_payment_gateway" => 0],
+            ["id" => "10711", "sub_account_id" => "1071", "cash_flow_category_id" => 1, "name" => "Persediaan Material", "initial_balance" => 0, "is_payment_gateway" => 0],
 
             // Kewajiban
             ["id" => "20111", "sub_account_id" => "2011", "cash_flow_category_id" => 1, "name" => "Hutang Usaha Lokal", "initial_balance" => 0, "is_payment_gateway" => 0],
@@ -399,7 +399,7 @@ class DatabaseSeeder extends Seeder
             ["id" => "30211", "sub_account_id" => "3021", "cash_flow_category_id" => null, "name" => "Laba Ditahan Tahun Berjalan", "initial_balance" => 0, "is_payment_gateway" => 0],
 
             // Pendapatan
-            ["id" => "40111", "sub_account_id" => "4011", "cash_flow_category_id" => 1, "name" => "Penjualan Produk A", "initial_balance" => 0, "is_payment_gateway" => 0],
+            ["id" => "40111", "sub_account_id" => "4011", "cash_flow_category_id" => 1, "name" => "Penjualan Produk", "initial_balance" => 0, "is_payment_gateway" => 0],
             ["id" => "40211", "sub_account_id" => "4021", "cash_flow_category_id" => 1, "name" => "Pendapatan Jasa Konsultasi", "initial_balance" => 0, "is_payment_gateway" => 0],
 
             // Beban
@@ -417,6 +417,7 @@ class DatabaseSeeder extends Seeder
             ["id" => "80111", "sub_account_id" => "8011", "cash_flow_category_id" => 1, "name" => "Beban Listrik Kantor", "initial_balance" => 0, "is_payment_gateway" => 0],
             ["id" => "80211", "sub_account_id" => "8021", "cash_flow_category_id" => 1, "name" => "Beban Telepon Kantor", "initial_balance" => 0, "is_payment_gateway" => 0],
             ["id" => "80311", "sub_account_id" => "8031", "cash_flow_category_id" => 1, "name" => "Beban Potongan Penjualan", "initial_balance" => 0, "is_payment_gateway" => 0],
+            ["id" => "80411", "sub_account_id" => "8031", "cash_flow_category_id" => 1, "name" => "Beban Kerugian Material", "initial_balance" => 0, "is_payment_gateway" => 0],
 
         ]);
 
@@ -433,8 +434,9 @@ class DatabaseSeeder extends Seeder
             'company_name' => ucwords(str_replace('_', ' ', 'Fathania Souvenir')),
             'company_logo' => 'setups/1732116957.png',
             'retained_earning_id' => "30211",
-            'daily_wage' => 120000,
-            'hourly_overtime' => 120000/8,
+            'material_inventory_id' => "10711",
+            // 'daily_wage' => 120000,
+            // 'hourly_overtime' => 120000/8,
         ];
         Setup::insert($setup);
 
@@ -559,7 +561,7 @@ class DatabaseSeeder extends Seeder
                 "item" => "materials",
                 "price_used" => "buy_price",
                 "stock_normal_balance_id" => "D",
-                "subtotal_account_id" => Account::where("name", "Persediaan Barang Dagang")->get()->last()->id,
+                "subtotal_account_id" => Account::where("name", "Persediaan Material")->get()->last()->id,
                 "subtotal_normal_balance_id" => "D",
                 "taxes_account_id" => Account::where("name", "Beban Pajak Pembelian")->get()->last()->id,
                 "taxes_normal_balance_id" => "D",
@@ -577,7 +579,7 @@ class DatabaseSeeder extends Seeder
                 "item" => "materials",
                 "price_used" => "sell_price",
                 "stock_normal_balance_id" => "C",
-                "subtotal_account_id" => Account::where("name", "Persediaan Barang Dagang")->get()->last()->id,
+                "subtotal_account_id" => Account::where("name", "Persediaan Material")->get()->last()->id,
                 "subtotal_normal_balance_id" => "C",
                 "taxes_account_id" => Account::where("name", "Beban Pajak Penjualan")->get()->last()->id,
                 "taxes_normal_balance_id" => "D",
@@ -700,8 +702,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $stock_adjusts = [
-            ['name' => ucwords(str_replace('_', ' ', 'hilang')), "stock_normal_balance_id" => "C"],
-            ['name' => ucwords(str_replace('_', ' ', 'rusak')), "stock_normal_balance_id" => "C"],
+            ['name' => ucwords(str_replace('_', ' ', 'hilang')), "stock_normal_balance_id" => "C", "profit_loss_account_id" => "80411"],
+            ['name' => ucwords(str_replace('_', ' ', 'rusak')), "stock_normal_balance_id" => "C", "profit_loss_account_id" => "80411"],
         ];
         StockAdjust::insert($stock_adjusts);
 

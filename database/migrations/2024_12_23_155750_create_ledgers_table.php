@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
             $table->string('repayment_id')->nullable();
             $table->foreign('repayment_id')->references('id')->on('repayments')->onDelete('cascade');
+            $table->foreignId('inventory_adjust_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('account_id');
             $table->foreign('account_id')->references('id')->on('accounts');
             $table->foreignId('user_id')->constrained();

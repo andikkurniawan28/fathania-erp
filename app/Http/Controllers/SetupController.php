@@ -27,9 +27,9 @@ class SetupController extends Controller
             'company_name' => 'required|string|max:255',
             'company_logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max file size 2MB
             'retained_earning_id' => 'required',
-            'daily_wage' => 'nullable',
-            'hourly_wage' => 'nullable',
-            'hourly_overtime' => 'nullable',
+            // 'daily_wage' => 'nullable',
+            // 'hourly_wage' => 'nullable',
+            // 'hourly_overtime' => 'nullable',
         ]);
 
         $setup = Setup::findOrFail($id);

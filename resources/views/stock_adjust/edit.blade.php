@@ -52,6 +52,22 @@
                                 </div>
                             </div>
 
+                            {{-- Profit Loss Account --}}
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label" for="profit_loss_account">
+                                    {{ ucwords(str_replace('_', ' ', 'profit_loss_account')) }}
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" id="profit_loss_account" name="profit_loss_account_id">
+                                        @foreach($accounts as $account)
+                                            <option value="{{ $account->id }}" {{ $stock_adjust->profit_loss_account_id == $account->id ? 'selected' : '' }}>
+                                                {{ $account->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="row justify-content-end">
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-primary">Update</button>

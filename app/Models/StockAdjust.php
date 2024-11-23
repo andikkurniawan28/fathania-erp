@@ -17,26 +17,30 @@ class StockAdjust extends Model
         return $this->belongsTo(NormalBalance::class, 'stock_normal_balance_id');
     }
 
+    public function profit_loss_account(){
+        return $this->belongsTo(Account::class, 'profit_loss_account_id');
+    }
+
     protected static function booted()
     {
-        static::created(function ($role) {
+        static::created(function ($stock_adjust) {
             ActivityLog::create([
                 'user_id' => Auth::id(),
-                'description' => "Role '{$role->name}' was created.",
+                'description' => "StockAdjust '{$stock_adjust->name}' was created.",
             ]);
         });
 
-        static::updated(function ($role) {
+        static::updated(function ($stock_adjust) {
             ActivityLog::create([
                 'user_id' => Auth::id(),
-                'description' => "Role '{$role->name}' was updated.",
+                'description' => "StockAdjust '{$stock_adjust->name}' was updated.",
             ]);
         });
 
-        static::deleted(function ($role) {
+        static::deleted(function ($stock_adjust) {
             ActivityLog::create([
                 'user_id' => Auth::id(),
-                'description' => "Role '{$role->name}' was deleted.",
+                'description' => "StockAdjust '{$stock_adjust->name}' was deleted.",
             ]);
         });
     }

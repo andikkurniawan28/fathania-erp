@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Setup;
 use App\Models\Ledger;
-use App\Models\Account;
-use App\Models\TaxRate;
-use App\Models\Customer;
+use App\Models\Setup;
 use App\Models\Material;
-use App\Models\Supplier;
 use App\Models\Warehouse;
-use App\Models\PaymentTerm;
 use App\Models\StockAdjust;
 use Illuminate\Http\Request;
 use App\Models\InventoryAdjust;
@@ -148,6 +143,24 @@ class InventoryAdjustController extends Controller
             'warehouse_id' => $request->warehouse_id,
             'grand_total' => $request->grand_total,
         ]);
+        $material_inventory_account_id = Setup::get()->last()->material_inventory_id;
+        $stock_adjust = StockAdjust::whereId($request->stock_adjust_id)->get()->last();
+        Ledger::create([
+            "inventory_adjust_id" => $inventory_adjust->id,
+            "account_id" => $material_inventory_account_id,
+            "user_id" => $request->user_id,
+            'debit' => ($stock_adjust->stock_normal_balance_id == "D") ? $request->grand_total : 0,
+            'credit' => ($stock_adjust->stock_normal_balance_id == "C") ? $request->grand_total : 0,
+            "description" => "{$stock_adjust->name} - {$inventory_adjust->id}",
+        ]);
+        Ledger::create([
+            "inventory_adjust_id" => $inventory_adjust->id,
+            "account_id" => $stock_adjust->profit_loss_account_id,
+            "user_id" => $request->user_id,
+            'debit' => ($stock_adjust->stock_normal_balance_id == "C") ? $request->grand_total : 0,
+            'credit' => ($stock_adjust->stock_normal_balance_id == "D") ? $request->grand_total : 0,
+            "description" => "{$stock_adjust->name} - {$inventory_adjust->id}",
+        ]);
         return $inventory_adjust;
     }
 
@@ -170,7 +183,7 @@ class InventoryAdjustController extends Controller
                 'material_id' => $detail['material_id'],
                 'in' => ($stock_normal_balance_id == "D") ? $detail['qty'] : 0,
                 'out' => ($stock_normal_balance_id == "C") ? $detail['qty'] : 0,
-                'description' => "{$inventory_adjust->stock_adjust->name}",
+                'description' => "{$inventory_adjust->stock_adjust->name} - {$inventory_adjust->id}",
             ]);
             $item_order++;
         }

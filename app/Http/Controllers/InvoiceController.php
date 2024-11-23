@@ -214,7 +214,7 @@ class InvoiceController extends Controller
                 'material_id' => $detail['material_id'],
                 'in' => ($stock_normal_balance_id == "D") ? $detail['qty'] : 0,
                 'out' => ($stock_normal_balance_id == "C") ? $detail['qty'] : 0,
-                'description' => "{$invoice_category->name}",
+                'description' => "{$invoice_category->name} - {$request->id}",
             ]);
             $item_order++;
         }

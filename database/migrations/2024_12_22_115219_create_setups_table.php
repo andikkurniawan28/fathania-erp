@@ -18,9 +18,11 @@ return new class extends Migration
             $table->string('company_logo')->nullable();
             $table->string('retained_earning_id');
             $table->foreign('retained_earning_id')->references('id')->on('accounts');
-            $table->double('daily_wage')->nullable();
-            $table->double('hourly_wage')->nullable();
-            $table->double('hourly_overtime')->nullable();
+            $table->string('material_inventory_id');
+            $table->foreign('material_inventory_id')->references('id')->on('accounts');
+            // $table->double('daily_wage')->nullable();
+            // $table->double('hourly_wage')->nullable();
+            // $table->double('hourly_overtime')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
