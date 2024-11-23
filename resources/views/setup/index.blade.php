@@ -60,7 +60,7 @@
                                     {{ ucwords(str_replace('_', ' ', 'retained_earning_account')) }}
                                 </label>
                                 <div class="col-sm-10">
-                                    <select class="form-control select2" id="account" name="retained_earning_id" width="100%" required autofocus>
+                                    <select class="form-control select2" id="retained_earning" name="retained_earning_id" width="100%" required autofocus>
                                         <option disabled {{ is_null($setup->retained_earning_id) ? 'selected' : '' }}>
                                             Select a {{ ucwords(str_replace('_', ' ', 'account')) }} :
                                         </option>
@@ -74,27 +74,21 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="daily_wage">
-                                    {{ ucwords(str_replace('_', ' ', 'daily_wage')) }}
+                                <label class="col-sm-2 col-form-label" for="material_inventory_id">
+                                    {{ ucwords(str_replace('_', ' ', 'material_inventory_account')) }}
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="daily_wage" name="daily_wage" value="{{ $setup->daily_wage }}">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="hourly_wage">
-                                    {{ ucwords(str_replace('_', ' ', 'hourly_wage')) }}
-                                </label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="hourly_wage" name="hourly_wage" value="{{ $setup->hourly_wage }}">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="hourly_overtime">
-                                    {{ ucwords(str_replace('_', ' ', 'hourly_overtime')) }}
-                                </label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="hourly_overtime" name="hourly_overtime" value="{{ $setup->hourly_overtime }}">
+                                    <select class="form-control select2" id="material_inventory" name="material_inventory_id" width="100%" required autofocus>
+                                        <option disabled {{ is_null($setup->material_inventory_id) ? 'selected' : '' }}>
+                                            Select a {{ ucwords(str_replace('_', ' ', 'account')) }} :
+                                        </option>
+                                        @foreach($accounts as $account)
+                                            <option value="{{ $account->id }}"
+                                                {{ $setup->material_inventory_id == $account->id ? 'selected' : '' }}>
+                                                {{ $account->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="row justify-content-end">
@@ -113,9 +107,13 @@
 @section('additional_script')
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#account').select2({
+        $('#retained_earning').select2({
             theme: 'bootstrap',
-            placeholder: "Select a sub_account"
+            placeholder: "Select an account"
+        });
+        $('#material_inventory').select2({
+            theme: 'bootstrap',
+            placeholder: "Select an account"
         });
     });
 </script>

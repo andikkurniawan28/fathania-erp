@@ -28,10 +28,10 @@
                             @csrf @method('PUT')
 
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="name">
+                                <label class="col-sm-4 col-form-label" for="name">
                                     {{ ucwords(str_replace('_', ' ', 'name')) }}
                                 </label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $stock_adjust->name) }}" required autofocus>
                                 </div>
                             </div>
@@ -79,4 +79,19 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('additional_script')
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#profit_loss_account').select2({
+            theme: 'bootstrap',
+            placeholder: "Select an account"
+        });
+        $('#stock_normal_balance').select2({
+            theme: 'bootstrap',
+            placeholder: "Select a normal balance"
+        });
+    });
+</script>
 @endsection
