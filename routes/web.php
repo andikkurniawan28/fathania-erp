@@ -33,6 +33,7 @@ use App\Http\Controllers\MainAccountController;
 use App\Http\Controllers\PaymentTermController;
 use App\Http\Controllers\StockAdjustController;
 use App\Http\Controllers\AccountGroupController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\ClosingEntryController;
 use App\Http\Controllers\BudgetRefreshController;
@@ -46,6 +47,11 @@ use App\Http\Controllers\InventoryMovementController;
 use App\Http\Controllers\RepaymentCategoryController;
 use App\Http\Controllers\FinancialStatementController;
 use App\Http\Controllers\MaterialSubCategoryController;
+use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\OpportunityStatusController;
+use App\Http\Controllers\ProspectController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +106,10 @@ Route::get('/cash_flow', [CashFlowController::class, 'index'])->name('cash_flow.
 Route::get('/cash_flow/data/{year}/{month}', [CashFlowController::class, 'data'])->name('cash_flow.data');
 Route::post('/closing_entry', ClosingEntryController::class)->name('closing_entry');
 Route::post('/posting', PostingController::class)->name('posting');
+Route::get('/payable', [PayableController::class, 'index'])->name('payable.index')->middleware(['auth', 'check.permission']);
+Route::get('/payable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [PayableController::class, 'data'])->name('payable.data');
+Route::get('/receivable', [ReceivableController::class, 'index'])->name('receivable.index')->middleware(['auth', 'check.permission']);
+Route::get('/receivable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [ReceivableController::class, 'data'])->name('receivable.data');
 
 // Inventory
 Route::resource('/warehouse', WarehouseController::class)->middleware(['auth', 'check.permission']);
@@ -113,19 +123,22 @@ Route::resource('/repayment_category', RepaymentCategoryController::class)->midd
 Route::resource('/invoice', InvoiceController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/repayment', RepaymentController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/stock_adjust', StockAdjustController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/supplier', SupplierController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/vendor', VendorController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/inventory_adjust', InventoryAdjustController::class)->middleware(['auth', 'check.permission']);
 Route::get('/inventory_movement', [InventoryMovementController::class, 'index'])->name('inventory_movement.index')->middleware(['auth', 'check.permission']);
 Route::get('/inventory_movement/data/{material_id}/{warehouse_id}/{start_date}/{end_date}', [InventoryMovementController::class, 'data'])->name('inventory_movement.data');
 
-// Third Party
+// CRM
 Route::resource('/region', RegionController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/business', BusinessController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/supplier', SupplierController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/prospect', ProspectController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/customer', CustomerController::class)->middleware(['auth', 'check.permission']);
-Route::resource('/vendor', VendorController::class)->middleware(['auth', 'check.permission']);
-Route::get('/payable', [PayableController::class, 'index'])->name('payable.index')->middleware(['auth', 'check.permission']);
-Route::get('/payable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [PayableController::class, 'data'])->name('payable.data');
-Route::get('/receivable', [ReceivableController::class, 'index'])->name('receivable.index')->middleware(['auth', 'check.permission']);
-Route::get('/receivable/data/{third_party}/{third_party_id}/{start_date}/{end_date}', [ReceivableController::class, 'data'])->name('receivable.data');
+Route::resource('/opportunity_status', OpportunityStatusController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/opportunity', OpportunityController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/activity', ActivityController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/task', TaskController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/ticket', TicketController::class)->middleware(['auth', 'check.permission']);
+
 
 

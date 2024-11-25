@@ -32,6 +32,7 @@ use App\Models\RepaymentCategory;
 use App\Models\FinancialStatement;
 use Illuminate\Support\Facades\DB;
 use App\Models\MaterialSubCategory;
+use App\Models\OpportunityStatus;
 
 class DatabaseSeeder extends Seeder
 {
@@ -275,6 +276,48 @@ class DatabaseSeeder extends Seeder
             ['name' => ucfirst(str_replace('_', ' ', 'list_of_inventory_movement')), 'route' => 'inventory_movement.index'],
             ['name' => ucfirst(str_replace('_', ' ', 'list_of_payable')), 'route' => 'payable.index'],
             ['name' => ucfirst(str_replace('_', ' ', 'list_of_receivable')), 'route' => 'receivable.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_prospect')), 'route' => 'prospect.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_prospect')), 'route' => 'prospect.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_prospect')), 'route' => 'prospect.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_prospect')), 'route' => 'prospect.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_prospect')), 'route' => 'prospect.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_prospect')), 'route' => 'prospect.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_prospect')), 'route' => 'prospect.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_opportunity')), 'route' => 'opportunity.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_opportunity')), 'route' => 'opportunity.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_opportunity')), 'route' => 'opportunity.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_opportunity')), 'route' => 'opportunity.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_opportunity')), 'route' => 'opportunity.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_opportunity')), 'route' => 'opportunity.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_opportunity')), 'route' => 'opportunity.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_opportunity_status')), 'route' => 'opportunity_status.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_opportunity_status')), 'route' => 'opportunity_status.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_opportunity_status')), 'route' => 'opportunity_status.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_opportunity_status')), 'route' => 'opportunity_status.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_opportunity_status')), 'route' => 'opportunity_status.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_opportunity_status')), 'route' => 'opportunity_status.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_opportunity_status')), 'route' => 'opportunity_status.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_activity')), 'route' => 'activity.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_activity')), 'route' => 'activity.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_activity')), 'route' => 'activity.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_activity')), 'route' => 'activity.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_activity')), 'route' => 'activity.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_activity')), 'route' => 'activity.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_activity')), 'route' => 'activity.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_task')), 'route' => 'task.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_task')), 'route' => 'task.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_task')), 'route' => 'task.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_task')), 'route' => 'task.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_task')), 'route' => 'task.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_task')), 'route' => 'task.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_task')), 'route' => 'task.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_ticket')), 'route' => 'ticket.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_ticket')), 'route' => 'ticket.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_ticket')), 'route' => 'ticket.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_ticket')), 'route' => 'ticket.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'show_ticket')), 'route' => 'ticket.show'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_ticket')), 'route' => 'ticket.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_ticket')), 'route' => 'ticket.destroy'],
         ];
         Feature::insert($features);
 
@@ -432,7 +475,7 @@ class DatabaseSeeder extends Seeder
         $setup = [
             'app_name' => ucwords(str_replace('_', ' ', 'Fathania-ERP')),
             'company_name' => ucwords(str_replace('_', ' ', 'Fathania Souvenir')),
-            'company_logo' => 'setups/1732116957.png',
+            'company_logo' => 'setups/1732116957.jpg',
             'retained_earning_id' => "30211",
             'material_inventory_id' => "10711",
             // 'daily_wage' => 120000,
@@ -706,6 +749,13 @@ class DatabaseSeeder extends Seeder
             ['name' => ucwords(str_replace('_', ' ', 'rusak')), "stock_normal_balance_id" => "C", "profit_loss_account_id" => "80411"],
         ];
         StockAdjust::insert($stock_adjusts);
+
+        $opportunity_statuses = [
+            ["name" => "Open"],
+            ["name" => "Won"],
+            ["name" => "Lost"],
+        ];
+        OpportunityStatus::insert($opportunity_statuses);
 
     }
 }

@@ -35,7 +35,7 @@
             <div class="col-md-6 col-lg-3 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Total Receivable</h5>
+                        <h5 class="card-title">Receivable from Customer</h5>
                         <p class="card-text">{{ number_format($data['receivableVsPayable']['receivable']) }} IDR</p>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
             <div class="col-md-6 col-lg-3 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Total Payable</h5>
+                        <h5 class="card-title">Payable from Supplier</h5>
                         <p class="card-text">{{ number_format($data['receivableVsPayable']['payable']) }} IDR</p>
                     </div>
                 </div>
