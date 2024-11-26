@@ -59,8 +59,8 @@
                                             <th>Account ID</th>
                                             <th>Account Name</th>
                                             <th>Description</th>
-                                            <th>Debit</th>
-                                            <th>Credit</th>
+                                            <th>Debit<sub>({{$setup->currency->symbol}})</sub></th>
+                                            <th>Credit<sub>({{$setup->currency->symbol}})</sub></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,16 +69,24 @@
                                                 <td>{{ $detail->account->id }}</td>
                                                 <td>{{ $detail->account->name }}</td>
                                                 <td>{{ $detail->description }}</td>
-                                                <td>{{ number_format($detail->debit) }}</td>
-                                                <td>{{ number_format($detail->credit) }}</td>
+                                                <td>
+                                                    {{ $detail->debit != 0 && $detail->debit !== null
+                                                        ? number_format($detail->debit, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator)
+                                                        : '' }}
+                                                </td>
+                                                <td>
+                                                    {{ $detail->credit != 0 && $detail->credit !== null
+                                                        ? number_format($detail->credit, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator)
+                                                        : '' }}
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th colspan="3">Total</th>
-                                            <th>{{ number_format($journal->journal_detail->sum('debit')) }}</th>
-                                            <th>{{ number_format($journal->journal_detail->sum('credit')) }}</th>
+                                            <th>{{ number_format($journal->journal_detail->sum('debit'), 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+                                            <th>{{ number_format($journal->journal_detail->sum('credit'), 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

@@ -24,9 +24,9 @@
                             <tr>
                                 <th>{{ strtoupper(str_replace('_', ' ', 'id')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'timestamp')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'debit')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'credit')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'user')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'debit')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'credit')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'action')) }}</th>
                             </tr>
                         </thead>
@@ -62,10 +62,6 @@
                         name: 'created_at'
                     },
                     {
-                        data: 'user_id',
-                        name: 'user.name'
-                    },
-                    {
                         data: 'debit',
                         name: 'debit',
                         class: 'text-right',
@@ -80,6 +76,10 @@
                         render: function(data, type, row) {
                             return formatCurrency(data);
                         }
+                    },
+                    {
+                        data: 'user_id',
+                        name: 'user.name'
                     },
                     {
                         data: null,

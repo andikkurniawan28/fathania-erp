@@ -46,6 +46,24 @@ class JournalController extends Controller
     // Store method to save new journal and its details
     public function store(Request $request)
     {
+        // Ambil semua data dari request
+        $data = $request->all();
+
+        // Format setiap elemen debit dan credit di dalam details
+        if (isset($data['details']) && is_array($data['details'])) {
+            foreach ($data['details'] as $index => $detail) {
+                if (isset($detail['debit'])) {
+                    $data['details'][$index]['debit'] = Setup::checkFormat($detail['debit']);
+                }
+                if (isset($detail['credit'])) {
+                    $data['details'][$index]['credit'] = Setup::checkFormat($detail['credit']);
+                }
+            }
+        }
+
+        // Mutasi ulang data ke dalam request
+        $request->merge($data);
+
         $request->validate([
             'details.*.account_id' => 'required|exists:accounts,id',
             'details.*.debit' => 'nullable|numeric',
@@ -108,7 +126,7 @@ class JournalController extends Controller
     {
         $setup = Setup::init();
         $journal = Journal::with('journal_detail')->findOrFail($id);
-        return view('journal.show', compact('setup', 'journal'));
+        return view('journal.show2', compact('setup', 'journal'));
     }
 
     // Edit method to show the edit form for a journal
