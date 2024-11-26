@@ -32,6 +32,7 @@ class TaxRateController extends Controller
      */
     public function store(Request $request)
     {
+        $request->request->add(['rate' => Setup::checkFormat($request->rate)]);
         $validated = $request->validate([
             "name" => "required|unique:tax_rates",
             "rate" => "required",
@@ -64,6 +65,7 @@ class TaxRateController extends Controller
     public function update(Request $request, $id)
     {
         $tax_rate = TaxRate::findOrFail($id);
+        $request->request->add(['rate' => Setup::checkFormat($request->rate)]);
         $validated = $request->validate([
             'name' => 'required|unique:tax_rates,name,' . $tax_rate->id,
             "rate" => "required",

@@ -13,6 +13,7 @@ use App\Models\Account;
 use App\Models\Feature;
 use App\Models\TaxRate;
 use App\Models\Business;
+use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Supplier;
@@ -28,11 +29,11 @@ use App\Models\InvoiceCategory;
 use Illuminate\Database\Seeder;
 use App\Models\CashFlowCategory;
 use App\Models\MaterialCategory;
+use App\Models\OpportunityStatus;
 use App\Models\RepaymentCategory;
 use App\Models\FinancialStatement;
 use Illuminate\Support\Facades\DB;
 use App\Models\MaterialSubCategory;
-use App\Models\OpportunityStatus;
 
 class DatabaseSeeder extends Seeder
 {
@@ -41,6 +42,48 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Currency::insert([
+            ['name' => 'Indonesian Rupiah', 'symbol' => 'Rp', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'US Dollar', 'symbol' => '$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Euro', 'symbol' => '€', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'British Pound', 'symbol' => '£', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Japanese Yen', 'symbol' => '¥', 'thousand_separator' => ',', 'decimal_separator' => ''],
+            ['name' => 'Australian Dollar', 'symbol' => 'A$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Canadian Dollar', 'symbol' => 'C$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Swiss Franc', 'symbol' => 'CHF', 'thousand_separator' => '\'', 'decimal_separator' => '.'],
+            ['name' => 'Chinese Yuan', 'symbol' => '¥', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Indian Rupee', 'symbol' => '₹', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Mexican Peso', 'symbol' => 'MX$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Brazilian Real', 'symbol' => 'R$', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'South African Rand', 'symbol' => 'R', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Russian Ruble', 'symbol' => '₽', 'thousand_separator' => ' ', 'decimal_separator' => ','],
+            ['name' => 'South Korean Won', 'symbol' => '₩', 'thousand_separator' => ',', 'decimal_separator' => ''],
+            ['name' => 'Turkish Lira', 'symbol' => '₺', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Singapore Dollar', 'symbol' => 'S$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Malaysian Ringgit', 'symbol' => 'RM', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Philippine Peso', 'symbol' => '₱', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Thai Baht', 'symbol' => '฿', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Vietnamese Dong', 'symbol' => '₫', 'thousand_separator' => '.', 'decimal_separator' => ''],
+            ['name' => 'Saudi Riyal', 'symbol' => '﷼', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'United Arab Emirates Dirham', 'symbol' => 'د.إ', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Hong Kong Dollar', 'symbol' => 'HK$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'New Zealand Dollar', 'symbol' => 'NZ$', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Norwegian Krone', 'symbol' => 'kr', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Swedish Krona', 'symbol' => 'kr', 'thousand_separator' => ' ', 'decimal_separator' => ','],
+            ['name' => 'Danish Krone', 'symbol' => 'kr', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Egyptian Pound', 'symbol' => 'E£', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Bangladeshi Taka', 'symbol' => '৳', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Pakistani Rupee', 'symbol' => '₨', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Sri Lankan Rupee', 'symbol' => 'Rs', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Chilean Peso', 'symbol' => 'CLP$', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Peruvian Sol', 'symbol' => 'S/', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Colombian Peso', 'symbol' => 'COP$', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Argentine Peso', 'symbol' => 'ARS$', 'thousand_separator' => '.', 'decimal_separator' => ','],
+            ['name' => 'Kuwaiti Dinar', 'symbol' => 'KD', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Qatari Riyal', 'symbol' => 'QR', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+            ['name' => 'Omani Rial', 'symbol' => '﷼', 'thousand_separator' => ',', 'decimal_separator' => '.'],
+        ]);
+
         $roles = [
             ['name' => ucwords(str_replace('_', ' ', 'owner'))],
         ];
@@ -91,6 +134,12 @@ class DatabaseSeeder extends Seeder
             ['name' => ucfirst(str_replace('_', ' ', 'edit_normal_balance')), 'route' => 'normal_balance.edit'],
             ['name' => ucfirst(str_replace('_', ' ', 'update_normal_balance')), 'route' => 'normal_balance.update'],
             ['name' => ucfirst(str_replace('_', ' ', 'delete_normal_balance')), 'route' => 'normal_balance.destroy'],
+            ['name' => ucfirst(str_replace('_', ' ', 'list_of_currency')), 'route' => 'currency.index'],
+            ['name' => ucfirst(str_replace('_', ' ', 'create_currency')), 'route' => 'currency.create'],
+            ['name' => ucfirst(str_replace('_', ' ', 'save_currency')), 'route' => 'currency.store'],
+            ['name' => ucfirst(str_replace('_', ' ', 'edit_currency')), 'route' => 'currency.edit'],
+            ['name' => ucfirst(str_replace('_', ' ', 'update_currency')), 'route' => 'currency.update'],
+            ['name' => ucfirst(str_replace('_', ' ', 'delete_currency')), 'route' => 'currency.destroy'],
             ['name' => ucfirst(str_replace('_', ' ', 'list_of_account_group')), 'route' => 'account_group.index'],
             ['name' => ucfirst(str_replace('_', ' ', 'create_account_group')), 'route' => 'account_group.create'],
             ['name' => ucfirst(str_replace('_', ' ', 'save_account_group')), 'route' => 'account_group.store'],
@@ -473,6 +522,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $setup = [
+            'currency_id' => 1,
             'app_name' => ucwords(str_replace('_', ' ', 'Fathania-ERP')),
             'company_name' => ucwords(str_replace('_', ' ', 'Fathania Souvenir')),
             'company_logo' => 'setups/1732116957.jpg',
@@ -614,6 +664,8 @@ class DatabaseSeeder extends Seeder
                 "discount_normal_balance_id" => "C",
                 "grand_total_account_id" => Account::where("name", "Hutang Usaha Lokal")->get()->last()->id,
                 "grand_total_normal_balance_id" => "C",
+                "profit_account_id" => null,
+                "profit_normal_balance_id" => null,
             ],
             [
                 "id" => "SLSM",
@@ -632,6 +684,8 @@ class DatabaseSeeder extends Seeder
                 "discount_normal_balance_id" => "D",
                 "grand_total_account_id" => Account::where("name", "Piutang Dagang Lokal")->get()->last()->id,
                 "grand_total_normal_balance_id" => "D",
+                "profit_account_id" => "40111",
+                "profit_normal_balance_id" => "C",
             ],
         ]);
 

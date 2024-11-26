@@ -1,10 +1,10 @@
 @extends('template.sneat.master')
 
 @section('title')
-    {{ ucwords(str_replace('_', ' ', 'account')) }}
+    {{ ucwords(str_replace('_', ' ', 'currency')) }}
 @endsection
 
-@section('account-active')
+@section('currency-active')
     {{ 'active' }}
 @endsection
 
@@ -15,7 +15,7 @@
             <div class="card-body">
                 <h4>List of <strong>@yield('title')</strong></h4>
                 <div class="btn-group" role="group" aria-label="manage">
-                    <a href="{{ route('account.create') }}" class="btn btn-sm btn-primary">Create</a>
+                    <a href="{{ route('currency.create') }}" class="btn btn-sm btn-primary">Create</a>
                 </div>
                 <div class="table-responsive">
                     <span class="half-line-break"></span>
@@ -24,28 +24,24 @@
                             <tr>
                                 <th>{{ strtoupper(str_replace('_', ' ', 'id')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'name')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'sub_account')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'cash_flow_category')) }}</th>
-                                {{-- <th>{{ ucwords(str_replace('_', ' ', 'normal_balance')) }}</th> --}}
-                                <th>{{ ucwords(str_replace('_', ' ', 'initial_balance')) }}<sub>({{$setup->currency->symbol}})</sub></th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'is_payment_gateway')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'symbol')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'thousand_separator')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'decimal_separator')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'manage')) }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($accounts as $account)
+                            @foreach ($currencys as $currency)
                                 <tr>
-                                    <td>{{ $account->id }}</td>
-                                    <td>{{ $account->name }}</td>
-                                    <td>{{ $account->sub_account->name }}</td>
-                                    <td>{{ $account->cash_flow_category->name ?? "-" }}</td>
-                                    {{-- <td>{{ $account->normal_balance->name }}</td> --}}
-                                    <td>{{ number_format($account->initial_balance, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
-                                    <td>{{ $account->is_payment_gateway }}</td>
+                                    <td>{{ $currency->id }}</td>
+                                    <td>{{ $currency->name }}</td>
+                                    <td>{{ $currency->symbol }}</td>
+                                    <td>{{ $currency->thousand_separator }}</td>
+                                    <td>{{ $currency->decimal_separator }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="manage">
-                                            <a href="{{ route('account.edit', $account->id) }}" class="btn btn-secondary btn-sm">Edit</a>
-                                            <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ $account->id }}" data-name="{{ $account->name }}">Delete</button>
+                                            <a href="{{ route('currency.edit', $currency->id) }}" class="btn btn-secondary btn-sm">Edit</a>
+                                            <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="{{ $currency->id }}" data-name="{{ $currency->name }}">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -63,8 +59,8 @@
             deleteButtons.forEach(button => {
                 button.addEventListener('click', function(event) {
                     event.preventDefault();
-                    const account_id = this.getAttribute('data-id');
-                    const account_name = this.getAttribute('data-name');
+                    const currency_id = this.getAttribute('data-id');
+                    const currency_name = this.getAttribute('data-name');
                     Swal.fire({
                         title: 'Are you sure?',
                         text: 'You won\'t be able to revert this!',
@@ -78,8 +74,8 @@
                             const form = document.createElement('form');
                             form.setAttribute('method', 'POST');
                             form.setAttribute('action',
-                                `{{ route('account.destroy', ':id') }}`.replace(
-                                    ':id', account_id));
+                                `{{ route('currency.destroy', ':id') }}`.replace(
+                                    ':id', currency_id));
                             const csrfToken = document.getElementsByName("_token")[0].value;
 
                             const hiddenMethod = document.createElement('input');
@@ -90,7 +86,7 @@
                             const name = document.createElement('input');
                             name.setAttribute('type', 'hidden');
                             name.setAttribute('name', 'name');
-                            name.setAttribute('value', account_name);
+                            name.setAttribute('value', currency_name);
 
                             const csrfTokenInput = document.createElement('input');
                             csrfTokenInput.setAttribute('type', 'hidden');

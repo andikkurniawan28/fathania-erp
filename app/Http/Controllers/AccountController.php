@@ -38,6 +38,7 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
+        $request->request->add(["initial_balance" => Setup::checkFormat($request->initial_balance)]);
         $validated = $request->validate([
             "id" => "required|unique:accounts",
             "name" => "required|unique:accounts",
@@ -77,6 +78,7 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
         $account = Account::findOrFail($id);
+        $request->request->add(["initial_balance" => Setup::checkFormat($request->initial_balance)]);
         $validated = $request->validate([
             'id' => 'required|unique:accounts,id,' . $account->id,
             'name' => 'required|unique:accounts,name,' . $account->id,

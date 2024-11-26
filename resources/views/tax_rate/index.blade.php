@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <th>{{ ucwords(str_replace('_', ' ', 'name')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'rate')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'rate')) }}<sub>(%)</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'manage')) }}</th>
                             </tr>
                         </thead>
@@ -31,7 +31,7 @@
                             @foreach ($tax_rates as $tax_rate)
                                 <tr>
                                     <td>{{ $tax_rate->name }}</td>
-                                    <td>{{ $tax_rate->rate }}</td>
+                                    <td>{{ number_format($tax_rate->rate, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="manage">
                                             <a href="{{ route('tax_rate.edit', $tax_rate->id) }}" class="btn btn-secondary btn-sm">Edit</a>

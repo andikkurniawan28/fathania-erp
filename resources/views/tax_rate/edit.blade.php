@@ -9,6 +9,9 @@
 @endsection
 
 @section('content')
+    @php
+        $tax_rate->rate = number_format($tax_rate->rate, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator);
+    @endphp
     <div class="container-xxl flex-grow-1 container-p-y">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -39,9 +42,10 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="rate">
                                     {{ ucwords(str_replace('_', ' ', 'rate')) }}
+                                    <sub>(%)</sub>
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" step="any" class="form-control" id="rate" name="rate" value="{{ old('rate', $tax_rate->rate) }}" required autofocus>
+                                    <input type="text" step="any" class="form-control" id="rate" name="rate" value="{{ old('rate', $tax_rate->rate) }}" required>
                                 </div>
                             </div>
 

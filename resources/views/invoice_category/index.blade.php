@@ -33,9 +33,12 @@
                                 <th colspan="2">{{ ucwords(str_replace('_', ' ', 'freight')) }}</th>
                                 <th colspan="2">{{ ucwords(str_replace('_', ' ', 'discount')) }}</th>
                                 <th colspan="2">{{ ucwords(str_replace('_', ' ', 'grand_total')) }}</th>
+                                <th colspan="2">{{ ucwords(str_replace('_', ' ', 'profit')) }}</th>
                                 <th rowspan="2">{{ ucwords(str_replace('_', ' ', 'manage')) }}</th>
                             </tr>
                             <tr>
+                                <th>{{ ucwords(str_replace('_', ' ', 'ac')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'nb')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'ac')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'nb')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'ac')) }}</th>
@@ -67,6 +70,8 @@
                                     <td>{{ $invoice_category->discount_normal_balance->name }}</td>
                                     <td>{{ $invoice_category->grand_total_account->name }}</td>
                                     <td>{{ $invoice_category->grand_total_normal_balance->name }}</td>
+                                    <td>{{ $invoice_category->profit_account->name ?? "-" }}</td>
+                                    <td>{{ $invoice_category->profit_normal_balance->name ?? "-" }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="manage">
                                             <a href="{{ route('invoice_category.edit', $invoice_category->id) }}" class="btn btn-secondary btn-sm">Edit</a>

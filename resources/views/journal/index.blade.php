@@ -70,9 +70,7 @@
                         name: 'debit',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {
@@ -80,13 +78,10 @@
                         name: 'credit',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {
-                        // <a href="{{ url('journal') }}/${row.id}/edit" class="btn btn-secondary btn-sm">Edit</a>
                         data: null,
                         name: 'actions',
                         render: function(data, type, row) {

@@ -42,6 +42,7 @@ use App\Http\Controllers\IncomeStatementController;
 use App\Http\Controllers\InventoryAdjustController;
 use App\Http\Controllers\InvoiceCategoryController;
 use App\Http\Controllers\CashFlowCategoryController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\MaterialCategoryController;
 use App\Http\Controllers\InventoryMovementController;
 use App\Http\Controllers\RepaymentCategoryController;
@@ -86,6 +87,7 @@ Route::get('/activity_log', ActivityLogController::class)->name('activity_log')-
 Route::resource('/cash_flow_category', CashFlowCategoryController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/financial_statement', FinancialStatementController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/normal_balance', NormalBalanceController::class)->middleware(['auth', 'check.permission']);
+Route::resource('/currency', CurrencyController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/account_group', AccountGroupController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/main_account', MainAccountController::class)->middleware(['auth', 'check.permission']);
 Route::resource('/sub_account', SubAccountController::class)->middleware(['auth', 'check.permission']);

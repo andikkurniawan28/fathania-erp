@@ -61,6 +61,14 @@ class InvoiceCategory extends Model
         return $this->belongsTo(NormalBalance::class, 'grand_total_normal_balance_id');
     }
 
+    public function profit_account(){
+        return $this->belongsTo(Account::class, 'profit_account_id');
+    }
+
+    public function profit_normal_balance(){
+        return $this->belongsTo(NormalBalance::class, 'profit_normal_balance_id');
+    }
+
     protected static function booted()
     {
         static::created(function ($invoice_category) {

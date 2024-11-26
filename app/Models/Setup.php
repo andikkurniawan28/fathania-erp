@@ -18,6 +18,10 @@ class Setup extends Model
         return $setup;
     }
 
+    public function currency(){
+        return $this->belongsTo(Currency::class);
+    }
+
     public function retained_earning()
     {
         return $this->belongsTo(Account::class, 'retained_earning_id');
@@ -36,5 +40,14 @@ class Setup extends Model
     public static function hourlyOvertime()
     {
         return self::latest()->first()->hourly_overtime;
+    }
+
+    public static function checkFormat($input){
+        $setup = self::get()->last();
+        $thousand_separator = $setup->currency->thousand_separator;
+        $decimal_separator = $setup->currency->decimal_separator;
+        $input = str_replace($thousand_separator, '', $input);
+        $input = str_replace($decimal_separator, '.', $input);
+        return $input;
     }
 }

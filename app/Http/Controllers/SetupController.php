@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Setup;
 use App\Models\Account;
 use App\Models\ActivityLog;
+use App\Models\Currency;
 use Illuminate\Http\Request;
 
 class SetupController extends Controller
@@ -17,12 +18,14 @@ class SetupController extends Controller
         $setup = Setup::init();
         $setups = Setup::get()->last();
         $accounts = Account::all();
-        return view("setup.index", compact("setup", "setups", "accounts"));
+        $currencys = Currency::all();
+        return view("setup.index", compact("setup", "setups", "accounts", "currencys"));
     }
 
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'currency_id' => 'required',
             'app_name' => 'required|string|max:255',
             'company_name' => 'required|string|max:255',
             'company_logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max file size 2MB

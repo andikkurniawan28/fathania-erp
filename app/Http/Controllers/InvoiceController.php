@@ -221,14 +221,29 @@ class InvoiceController extends Controller
     }
 
     public static function saveInvoiceToLedger($request, $invoice_category){
+
+        // Jika Barang keluar, untuk akun persediaan material, yang dimasukkan ke Buku Besar adalah harga beli.
+        // Karena jika harga jual dari subtotal, maka tidak sesuai dengan sebenarnya karena ada perbedaan harga.
+        if($invoice_category->stock_normal_balance_id == "C"){
+            $real_subtotal = 0;
+            foreach ($request->details as $detail){
+                $real_subtotal += Material::whereId($detail['material_id'])->get()->last()->buy_price * $detail['qty'];
+            }
+            $profit = $request->subtotal - $real_subtotal;
+        } else {
+            $real_subtotal = $request->subtotal;
+            $profit = 0;
+        }
+
+        // Array yang akan dimasukkan ke Buku Besar
         $data = [
             [
                 "invoice_id" => $request->id,
                 "account_id" => $invoice_category->subtotal_account_id,
                 "user_id" => $request->user_id,
                 "description" => "{$invoice_category->name} - {$request->id}",
-                "debit" => $invoice_category->subtotal_normal_balance_id == "D" ? $request->subtotal : 0,
-                "credit" => $invoice_category->subtotal_normal_balance_id == "C" ? $request->subtotal : 0,
+                "debit" => $invoice_category->subtotal_normal_balance_id == "D" ? $real_subtotal : 0,
+                "credit" => $invoice_category->subtotal_normal_balance_id == "C" ? $real_subtotal : 0,
             ],
             [
                 "invoice_id" => $request->id,
@@ -264,6 +279,19 @@ class InvoiceController extends Controller
             ],
         ];
 
+        // Jika akun untuk profit diisi, maka tambahkan array data dengan profit
+        if($invoice_category->profit_account_id != null){
+            $data[] = [
+                "invoice_id" => $request->id,
+                "account_id" => $invoice_category->profit_account_id,
+                "user_id" => $request->user_id,
+                "description" => "Profit - {$invoice_category->name} - {$request->id}",
+                "debit" => $invoice_category->profit_normal_balance_id == "D" ? $profit : 0,
+                "credit" => $invoice_category->profit_normal_balance_id == "C" ? $profit : 0,
+            ];
+        }
+
+        // Hanya simpan yang debit // credit nya tidak 0 supaya tidak ada data 0 yang tersimpan di Buku Besar
         $filteredData = array_filter($data, function($entry) {
             return $entry['debit'] != 0 || $entry['credit'] != 0;
         });

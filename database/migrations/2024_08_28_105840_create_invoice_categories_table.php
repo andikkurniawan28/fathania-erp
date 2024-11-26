@@ -39,6 +39,10 @@ return new class extends Migration
             $table->foreign('grand_total_account_id')->references('id')->on('accounts');
             $table->string('grand_total_normal_balance_id');
             $table->foreign('grand_total_normal_balance_id')->references('id')->on('normal_balances');
+            $table->string('profit_account_id')->nullable();
+            $table->foreign('profit_account_id')->references('id')->on('accounts');
+            $table->string('profit_normal_balance_id')->nullable();
+            $table->foreign('profit_normal_balance_id')->references('id')->on('normal_balances');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });

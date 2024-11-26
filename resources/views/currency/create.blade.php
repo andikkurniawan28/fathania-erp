@@ -1,10 +1,10 @@
 @extends('template.sneat.master')
 
 @section('title')
-    {{ ucwords(str_replace('_', ' ', 'create_tax_rate')) }}
+    {{ ucwords(str_replace('_', ' ', 'create_currency')) }}
 @endsection
 
-@section('tax_rate-active')
+@section('currency-active')
     {{ 'active' }}
 @endsection
 
@@ -13,7 +13,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route("tax_rate.index") }}">{{ ucwords(str_replace('_', ' ', 'tax_rate')) }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ route("currency.index") }}">{{ ucwords(str_replace('_', ' ', 'currency')) }}</a></li>
             <li class="breadcrumb-item active" aria-current="page">@yield("title")</li>
             </ol>
         </nav>
@@ -24,7 +24,7 @@
                         <h5 class="mb-0">@yield('title')</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route("tax_rate.store") }}" method="POST">
+                        <form action="{{ route("currency.store") }}" method="POST">
                             @csrf @method("POST")
 
                             <div class="row mb-3">
@@ -37,12 +37,29 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="rate">
-                                    {{ ucwords(str_replace('_', ' ', 'rate')) }}
-                                    <sub>(%)</sub>
+                                <label class="col-sm-2 col-form-label" for="symbol">
+                                    {{ ucwords(str_replace('_', ' ', 'symbol')) }}
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="text" step="any" class="form-control number-format" id="rate" name="rate" value="{{ old("rate") }}" required autofocus>
+                                    <input type="text" class="form-control" id="symbol" name="symbol" value="{{ old("symbol") }}" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="thousand_separator">
+                                    {{ ucwords(str_replace('_', ' ', 'thousand_separator')) }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="thousand_separator" name="thousand_separator" value="{{ old("thousand_separator") }}" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-sm-2 col-form-label" for="decimal_separator">
+                                    {{ ucwords(str_replace('_', ' ', 'decimal_separator')) }}
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="decimal_separator" name="decimal_separator" value="{{ old("decimal_separator") }}" required>
                                 </div>
                             </div>
 

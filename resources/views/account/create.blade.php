@@ -76,9 +76,10 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="initial_balance">
                                     {{ ucwords(str_replace('_', ' ', 'initial_balance')) }}
+                                    <sub>({{$setup->currency->symbol}})</sub>
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" step="any" class="form-control" id="initial_balance" name="initial_balance" value="{{ old("initial_balance") }}" required autofocus>
+                                    <input type="text" step="any" class="form-control number-format" id="initial_balance" name="initial_balance" value="{{ old("initial_balance") }}" required autofocus>
                                 </div>
                             </div>
 

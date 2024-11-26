@@ -9,6 +9,9 @@
 @endsection
 
 @section('content')
+    @php
+        $account->initial_balance = number_format($account->initial_balance, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator);
+    @endphp
     <div class="container-xxl flex-grow-1 container-p-y">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -73,7 +76,7 @@
                                         </option>
                                         @foreach($sub_accounts as $sub_account)
                                             <option value="{{ $sub_account->id }}"
-                                                {{ $account->sub_account == $sub_account->id ? 'selected' : '' }}>
+                                                {{ $account->sub_account_id == $sub_account->id ? 'selected' : '' }}>
                                                 {{ $sub_account->name }}
                                             </option>
                                         @endforeach
@@ -84,9 +87,10 @@
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label" for="initial_balance">
                                     {{ ucwords(str_replace('_', ' ', 'initial_balance')) }}
+                                    <sub>({{$setup->currency->symbol}})</sub>
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', $account->initial_balance) }}" required autofocus>
+                                    <input type="text" class="form-control number-format" id="initial_balance" name="initial_balance" value="{{ old('initial_balance', $account->initial_balance) }}" required autofocus>
                                 </div>
                             </div>
 

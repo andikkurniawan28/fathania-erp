@@ -13,6 +13,7 @@ class ApiGenerateMaterialInfoController extends Controller
     public function __invoke($material_id)
     {
         $material = Material::with('unit')->whereId($material_id)->get()->last();
+        $material->cost_price = $material->buy_price;
         return response()->json(['material' => $material]);
     }
 }

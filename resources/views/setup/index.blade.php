@@ -27,26 +27,26 @@
                         <form action="{{ route("setup.update", $setup->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf @method("PUT")
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="app_name">
+                                <label class="col-sm-4 col-form-label" for="app_name">
                                     {{ ucwords(str_replace('_', ' ', 'app_name')) }}
                                 </label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     <input type="text" class="form-control" id="app_name" name="app_name" value="{{ $setup->app_name }}" required autofocus>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="company_name">
+                                <label class="col-sm-4 col-form-label" for="company_name">
                                     {{ ucwords(str_replace('_', ' ', 'company_name')) }}
                                 </label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     <input type="text" class="form-control" id="company_name" name="company_name" value="{{ $setup->company_name }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="company_logo">
+                                <label class="col-sm-4 col-form-label" for="company_logo">
                                     {{ ucwords(str_replace('_', ' ', 'company_logo')) }}
                                 </label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     @if($setup->company_logo)
                                         <div class="mb-3">
                                             <img src="{{ asset($setup->company_logo) }}" alt="Company Logo" style="max-height: 100px; max-width: 200px;">
@@ -56,43 +56,61 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="retained_earning_id">
-                                    {{ ucwords(str_replace('_', ' ', 'retained_earning_account')) }}
+                                <label class="col-sm-4 col-form-label" for="currency_id">
+                                    {{ ucwords(str_replace('_', ' ', 'currency')) }}
                                 </label>
-                                <div class="col-sm-10">
-                                    <select class="form-control select2" id="retained_earning" name="retained_earning_id" width="100%" required autofocus>
-                                        <option disabled {{ is_null($setup->retained_earning_id) ? 'selected' : '' }}>
-                                            Select a {{ ucwords(str_replace('_', ' ', 'account')) }} :
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" id="currency" name="currency_id" width="100%" required autofocus>
+                                        <option disabled {{ is_null($setup->currency_id) ? 'selected' : '' }}>
+                                            Select a {{ ucwords(str_replace('_', ' ', 'currency')) }} :
                                         </option>
-                                        @foreach($accounts as $account)
-                                            <option value="{{ $account->id }}"
-                                                {{ $setup->retained_earning_id == $account->id ? 'selected' : '' }}>
-                                                {{ $account->name }}
+                                        @foreach($currencys as $currency)
+                                            <option value="{{ $currency->id }}"
+                                                {{ $setup->currency_id == $currency->id ? 'selected' : '' }}>
+                                                {{ $currency->symbol }} | {{ $currency->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="material_inventory_id">
+                                <label class="col-sm-4 col-form-label" for="retained_earning_id">
+                                    {{ ucwords(str_replace('_', ' ', 'retained_earning_account')) }}
+                                </label>
+                                <div class="col-sm-8">
+                                    <select class="form-control select2" id="retained_earning" name="retained_earning_id" width="100%" required autofocus>
+                                        <option disabled {{ is_null($setup->retained_earning_id) ? 'selected' : '' }}>
+                                            Select an {{ ucwords(str_replace('_', ' ', 'account')) }} :
+                                        </option>
+                                        @foreach($accounts as $account)
+                                            <option value="{{ $account->id }}"
+                                                {{ $setup->retained_earning_id == $account->id ? 'selected' : '' }}>
+                                                {{ $account->id }} | {{ $account->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label" for="material_inventory_id">
                                     {{ ucwords(str_replace('_', ' ', 'material_inventory_account')) }}
                                 </label>
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     <select class="form-control select2" id="material_inventory" name="material_inventory_id" width="100%" required autofocus>
                                         <option disabled {{ is_null($setup->material_inventory_id) ? 'selected' : '' }}>
-                                            Select a {{ ucwords(str_replace('_', ' ', 'account')) }} :
+                                            Select an {{ ucwords(str_replace('_', ' ', 'account')) }} :
                                         </option>
                                         @foreach($accounts as $account)
                                             <option value="{{ $account->id }}"
                                                 {{ $setup->material_inventory_id == $account->id ? 'selected' : '' }}>
-                                                {{ $account->name }}
+                                                {{ $account->id }} | {{ $account->name }}
                                             </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="row justify-content-end">
-                                <div class="col-sm-10">
+                                <div class="col-sm-8">
                                     <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
                             </div>
@@ -114,6 +132,10 @@
         $('#material_inventory').select2({
             theme: 'bootstrap',
             placeholder: "Select an account"
+        });
+        $('#currency').select2({
+            theme: 'bootstrap',
+            placeholder: "Select a currency"
         });
     });
 </script>

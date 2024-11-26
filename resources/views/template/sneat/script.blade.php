@@ -1,4 +1,29 @@
 <!-- Core JS -->
+<script>
+    // Fungsi untuk format angka dengan separator sesuai pengaturan
+    function formatCurrency(data) {
+        if (data === '-') {
+            return '-';
+        }
+
+        // Ambil nilai separator dari Blade
+        var decimalSeparator = '{{ $setup->currency->decimal_separator }}'; // Misal: ','
+        var thousandSeparator = '{{ $setup->currency->thousand_separator }}'; // Misal: '.'
+
+        // Format angka dengan PHP-style number_format
+        // Misal format dengan 2 angka di belakang koma
+        var formattedData = parseFloat(data).toFixed(2); // Format dengan 2 angka desimal
+
+        // Ganti titik dengan separator desimal dan koma dengan separator ribuan sesuai pengaturan
+        formattedData = formattedData.replace('.', decimalSeparator); // Ganti titik dengan separator desimal
+
+        // Pisahkan angka menjadi ribuan dan format separator ribuan
+        var parts = formattedData.split(decimalSeparator);
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator); // Format ribuan
+        return parts.join(decimalSeparator); // Gabungkan kembali bagian ribuan dan desimal
+    }
+</script>
+
 <!-- build:js /sneat/js/core.js -->
 <script src="{{ asset('sneat/assets/vendor/libs/jquery/jquery.js') }}"></script>
 <script src="{{ asset('sneat/assets/vendor/libs/popper/popper.js') }}"></script>
@@ -56,10 +81,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
 {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/gh/amiryxe/easy-number-separator/easy-number-separator.js"></script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+
+        const thousandSeparator = '{{ $setup->currency->thousand_separator }}';
+        const decimalSeparator = '{{ $setup->currency->decimal_separator }}';
+
+        easyNumberSeparator({
+            selector: '.number-format',
+            separator: thousandSeparator,
+            decimalSeparator: decimalSeparator
+        });
 
         @if (session('success'))
             Swal.fire({

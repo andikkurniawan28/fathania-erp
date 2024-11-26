@@ -85,7 +85,9 @@
 
         {{-- Accounting --}}
 
-        @if (in_array('cash_flow_category.index', $permissions) ||
+        @if (
+                in_array('currency.index', $permissions) ||
+                in_array('cash_flow_category.index', $permissions) ||
                 in_array('financial_statement.index', $permissions) ||
                 in_array('normal_balance.index', $permissions) ||
                 in_array('account_group.index', $permissions) ||
@@ -111,7 +113,9 @@
             </li>
         @endif
 
-        @if (in_array('cash_flow_category.index', $permissions) ||
+        @if (
+                in_array('currency.index', $permissions) ||
+                in_array('cash_flow_category.index', $permissions) ||
                 in_array('financial_statement.index', $permissions) ||
                 in_array('normal_balance.index', $permissions) ||
                 in_array('account_group.index', $permissions) ||
@@ -125,6 +129,7 @@
                 in_array('repayment_category.index', $permissions))
             <li
                 class="menu-item
+                @yield('currency-active')
                 @yield('cash_flow_category-active')
                 @yield('financial_statement-active')
                 @yield('normal_balance-active')
@@ -167,6 +172,14 @@
                         </a>
                     </li>
                     @endif --}}
+                    @if (in_array('currency.index', $permissions))
+                        <li class="menu-item @yield('currency-active')">
+                            <a href="{{ route('currency.index') }}" class="menu-link">
+                                <div data-i18n="Without menu">{{ ucwords(str_replace('_', ' ', 'currency')) }}
+                                </div>
+                            </a>
+                        </li>
+                    @endif
                     @if (in_array('account_group.index', $permissions))
                         <li class="menu-item @yield('account_group-active')">
                             <a href="{{ route('account_group.index') }}" class="menu-link">
@@ -375,7 +388,7 @@
         {{-- Inventory --}}
 
         @if (
-            in_array('warehouse.index', $permissions) ||
+                in_array('warehouse.index', $permissions) ||
                 in_array('unit.index', $permissions) ||
                 in_array('material_category.index', $permissions) ||
                 in_array('material_sub_category.index', $permissions) ||

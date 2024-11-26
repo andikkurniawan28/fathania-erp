@@ -15,6 +15,7 @@
         $permissions = collect($setup->permission)
             ->pluck('feature.route')
             ->toArray();
+
     @endphp
 </head>
 <body>

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('setups', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('currency_id')->constrained();
             $table->string('app_name');
             $table->string('company_name');
             $table->string('company_logo')->nullable();
