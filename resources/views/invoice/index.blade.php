@@ -85,9 +85,7 @@
                         name: 'grand_total',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {
@@ -95,9 +93,7 @@
                         name: 'left',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {

@@ -78,11 +78,7 @@
                         name: 'sell_price',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            // Jika data null atau kosong, asumsikan sebagai 0
-                            const value = data ? parseFloat(data) : 0;
-                            return value.toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return data === null ? '-' : formatCurrency(data);
                         }
                     },
                     {
@@ -90,11 +86,7 @@
                         name: 'buy_price',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            // Jika data null atau kosong, asumsikan sebagai 0
-                            const value = data ? parseFloat(data) : 0;
-                            return value.toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return data === null ? '-' : formatCurrency(data);
                         }
                     },
                     @foreach($warehouses as $warehouse)
@@ -103,11 +95,7 @@
                         name: '{{ str_replace(" ", "_", $warehouse->name) }}',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            // Jika data null atau kosong, asumsikan sebagai 0
-                            const value = data ? parseFloat(data) : 0;
-                            return value.toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return data === null ? '-' : formatCurrency(data);
                         }
                     },
                     @endforeach

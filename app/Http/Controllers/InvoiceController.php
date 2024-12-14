@@ -75,10 +75,44 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $invoice_category = InvoiceCategory::findOrFail($request->invoice_category_id) ;
-        $request = self::storeValidate($request);
+        $request->request->add(['user_id' => Auth()->user()->id]);
+
+        // Ambil semua data dari request
+        $data = $request->all();
+
+        // Format setiap elemen price, discount, dan qty di dalam details
+        if (isset($data['details']) && is_array($data['details'])) {
+            foreach ($data['details'] as $index => $detail) {
+                if (isset($detail['price'])) {
+                    $data['details'][$index]['price'] = Setup::checkFormat($detail['price']);
+                }
+                if (isset($detail['discount'])) {
+                    $data['details'][$index]['discount'] = Setup::checkFormat($detail['discount']);
+                }
+                if (isset($detail['qty'])) {
+                    $data['details'][$index]['qty'] = Setup::checkFormat($detail['qty']);
+                }
+                if (isset($detail['total'])) {
+                    $data['details'][$index]['total'] = Setup::checkFormat($detail['total']);
+                }
+            }
+        }
+
+        // Mutasi ulang data ke dalam request
+        $request->merge($data);
+
+        // Validasi request
+        $request->validate([
+            'invoice_category_id' => 'required|exists:invoice_categories,id',
+            'details.*.material_id' => 'required|exists:materials,id',
+            'details.*.qty' => 'required|numeric',
+            'details.*.price' => 'required|numeric',
+            'details.*.discount' => 'nullable|numeric',
+        ]);
+
         try {
             DB::beginTransaction();
+            $invoice_category = InvoiceCategory::findOrFail($request->invoice_category_id);
             $invoice = self::saveHeader($request);
             self::saveBody($request, 1, $invoice_category);
             self::saveInvoiceToLedger($request, $invoice_category);
@@ -171,11 +205,21 @@ class InvoiceController extends Controller
         return $request;
     }
 
-    public static function saveHeader($request){
+    public static function saveHeader($request)
+    {
+        // Format nilai numerik sebelum menyimpan ke database
+        $request->subtotal = Setup::checkFormat($request->subtotal);
+        $request->taxes = Setup::checkFormat($request->taxes);
+        $request->freight = Setup::checkFormat($request->freight);
+        $request->discount = Setup::checkFormat($request->discount);
+        $request->grand_total = Setup::checkFormat($request->grand_total);
+        $request->paid = Setup::checkFormat($request->paid);
+        $request->left = Setup::checkFormat($request->left);
+
         $invoice = Invoice::create([
             'id' => $request->id,
             'invoice_category_id' => $request->invoice_category_id,
-            'user_id' => $request->user_id,
+            'user_id' => Auth()->user()->id,
             'payment_term_id' => $request->payment_term_id,
             'tax_rate_id' => $request->tax_rate_id,
             'warehouse_id' => $request->warehouse_id,
@@ -191,6 +235,7 @@ class InvoiceController extends Controller
             'left' => $request->left,
             'payment_gateway_id' => $request->payment_gateway_id,
         ]);
+
         return $invoice;
     }
 
@@ -227,7 +272,7 @@ class InvoiceController extends Controller
         if($invoice_category->stock_normal_balance_id == "C"){
             $real_subtotal = 0;
             foreach ($request->details as $detail){
-                $real_subtotal += Material::whereId($detail['material_id'])->get()->last()->buy_price * $detail['qty'];
+                $real_subtotal += Setup::checkFormat(Material::whereId($detail['material_id'])->get()->last()->buy_price * $detail['qty']);
             }
             $profit = $request->subtotal - $real_subtotal;
         } else {
