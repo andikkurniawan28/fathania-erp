@@ -198,13 +198,13 @@
                     <input type="text" name="details[${item.id}][left]" id="details[${item.id}][left]" value="${item.left}" class="form-control" readonly>
                 </td>
                 <td>
-                    <input type="number" name="details[${item.id}][discount]" id="details[${item.id}][discount]" value="0" class="form-control discount" oninput="updateTotal('${item.id}')">
+                    <input type="text" name="details[${item.id}][discount]" id="details[${item.id}][discount]" value="0" class="form-control discount" oninput="updateTotal('${item.id}')">
                 </td>
                 <td>
-                    <input type="number" id="details[${item.id}][paid]" value="${item.left}" class="form-control paid" oninput="updateTotal('${item.id}')">
+                    <input type="text" id="details[${item.id}][paid]" value="${item.left}" class="form-control paid" oninput="updateTotal('${item.id}')">
                 </td>
                 <td>
-                    <input type="number" name="details[${item.id}][total]" id="details[${item.id}][total]" value="${item.left}" class="form-control total" readonly>
+                    <input type="text" name="details[${item.id}][total]" id="details[${item.id}][total]" value="${item.left}" class="form-control total" readonly>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger remove-row">Remove</button>

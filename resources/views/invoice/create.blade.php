@@ -68,6 +68,7 @@
             fetchData(apiUrl)
                 .then(data => {
                     document.getElementById('rate').value = data.tax_rate.rate;
+                    // console.log(data.tax_rate.rate);
                     updateTotals();
                 });
         }
@@ -157,7 +158,10 @@
                 totalSubtotal += parseFloat(removeFormatting(input.value)) || 0;
             });
 
-            let totalTaxes = (parseFloat(removeFormatting(document.getElementById('rate').value)) / 100) * totalSubtotal;
+            // console.log(document.getElementById('rate').value);
+            // console.log(totalSubtotal);
+            // console.log((document.getElementById('rate').value) / 100);
+            let totalTaxes = (parseFloat(document.getElementById('rate').value) / 100) * totalSubtotal;
 
             const grandTotal = totalSubtotal + totalTaxes + totalFreight - totalDiscount;
             const left = grandTotal - totalPaid;
