@@ -65,14 +65,53 @@ class RepaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $repayment_category = RepaymentCategory::findOrFail($request->repayment_category_id) ;
+        // Add user ID to the request
+        $request->request->add(['user_id' => auth()->id()]);
+
+        // Get all data from the request
+        $data = $request->all();
+
+        // Format each element in details
+        if (isset($data['details']) && is_array($data['details'])) {
+            foreach ($data['details'] as $index => $detail) {
+                if (isset($detail['discount'])) {
+                    $data['details'][$index]['discount'] = Setup::checkFormat($detail['discount']);
+                }
+                if (isset($detail['total'])) {
+                    $data['details'][$index]['total'] = Setup::checkFormat($detail['total']);
+                }
+                if (isset($detail['left'])) {
+                    $data['details'][$index]['left'] = Setup::checkFormat($detail['left']);
+                }
+                if (isset($detail['paid'])) {
+                    $data['details'][$index]['paid'] = Setup::checkFormat($detail['paid']);
+                }
+            }
+        }
+
+        // Format grand total
+        if (isset($data['grand_total'])) {
+            $data['grand_total'] = Setup::checkFormat($data['grand_total']);
+        }
+
+        // Merge the formatted data back into the request
+        $request->merge($data);
+
+        // Validate the request
         $request = self::storeValidate($request);
+
         try {
             DB::beginTransaction();
+
+            // Retrieve the repayment category after validation
+            $repayment_category = RepaymentCategory::findOrFail($request->repayment_category_id);
+
+            // Save the repayment header and body
             $repayment = self::saveHeader($request, $repayment_category);
             self::saveBody($request, 1, $repayment_category);
             self::saveRepaymentToLedger($request, $repayment_category);
             self::updatePayableOrReceivable($request, $repayment_category);
+
             DB::commit();
             return redirect()->route('repayment.index')->with('success', 'Repayment successfully created.');
         } catch (\Exception $e) {
@@ -151,7 +190,8 @@ class RepaymentController extends Controller
         return $request;
     }
 
-    public static function saveHeader($request, $repayment_category){
+    public static function saveHeader($request, $repayment_category)
+    {
         $repayment = Repayment::create([
             'id' => $request->id,
             'repayment_category_id' => $request->repayment_category_id,
@@ -161,6 +201,7 @@ class RepaymentController extends Controller
             'grand_total' => $request->grand_total,
             'payment_gateway_id' => $request->payment_gateway_id,
         ]);
+
         Ledger::insert([
             "repayment_id" => $request->id,
             "account_id" => $request->payment_gateway_id,
@@ -172,22 +213,30 @@ class RepaymentController extends Controller
         return $repayment;
     }
 
-    public static function saveBody($request, $item_order, $repayment_category){
+    public static function saveBody($request, $item_order, $repayment_category)
+    {
         foreach ($request->details as $detail) {
+            // Format numeric values before saving to the database
+            $formattedDiscount = $detail['discount'];
+            $formattedTotal = $detail['total'];
+            $formattedLeft = $detail['left'];
+
             RepaymentDetail::create([
                 'repayment_id' => $request->id,
                 'invoice_id' => $detail['invoice_id'],
-                'left' => $detail['left'],
-                'discount' => $detail['discount'],
-                'total' => $detail['total'],
+                'left' => $formattedLeft,
+                'discount' => $formattedDiscount,
+                'total' => $formattedTotal,
             ]);
+
             Invoice::whereId($detail['invoice_id'])->update([
-                "left" => $detail['left'] - $detail['total'],
+                "left" => $formattedLeft - $formattedTotal,
             ]);
         }
     }
 
-    public static function saveRepaymentToLedger($request, $repayment_category){
+    public static function saveRepaymentToLedger($request, $repayment_category)
+    {
         $data = [
             [
                 "repayment_id" => $request->id,

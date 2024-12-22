@@ -43,15 +43,43 @@
 
         #repayment-details-table th:last-child,
         #repayment-details-table td:last-child {
-            width: auto;
-            /* For Action column */
+            width: auto; /* For Action column */
         }
     </style>
 
     <script>
+        function easyNumberSeparator({ selector, separator, decimalSeparator }) {
+            document.querySelectorAll(selector).forEach(input => {
+                input.addEventListener('input', function () {
+                    let value = this.value.replace(new RegExp(`\\${separator}`, 'g'), ''); // Remove thousand separator
+                    value = value.replace(new RegExp(`\\${decimalSeparator}`, 'g'), '.'); // Convert decimal separator to dot
+                    this.value = formatCurrency(value); // Format the value
+                    updateGrandTotal(); // Update totals after formatting
+                });
+            });
+        }
+
+        function formatCurrency(value) {
+            const decimalSeparator = '{{ $setup->currency->decimal_separator }}'; // Example: ','
+            const thousandSeparator = '{{ $setup->currency->thousand_separator }}'; // Example: '.'
+
+            // Format the number
+            value = parseFloat(value).toFixed(2); // Format to 2 decimal places
+            let parts = value.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator); // Add thousand separator
+            return parts.join(decimalSeparator); // Join with decimal separator
+        }
+
         function handleRepaymentCategoryChange(selectElement) {
             const repaymentCategoryId = selectElement.value;
             const apiUrl = `/api/generate_repayment_id/${repaymentCategoryId}`;
+
+            // Reset semua dropdown
+            document.getElementById('supplier_id').value = ""; // Reset supplier dropdown
+            document.getElementById('customer_id').value = ""; // Reset customer dropdown
+            document.getElementById('supplier-select').style.display = "none"; // Sembunyikan supplier select
+            document.getElementById('customer-select').style.display = "none"; // Sembunyikan customer select
+
             fetch(apiUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -60,19 +88,16 @@
                     return response.json();
                 })
                 .then(data => {
-                    // Asumsikan response dari API mengandung property `repayment_id`
                     if (data.repayment_id) {
-                        // Menetapkan nilai repayment_id di input
                         document.getElementById('id').value = data.repayment_id;
-                        deal_with = data.repayment_category.deal_with;
-                        supplier_select = document.getElementById('supplier-select');
-                        customer_select = document.getElementById('customer-select');
+                        const deal_with = data.repayment_category.deal_with;
+                        const supplier_select = document.getElementById('supplier-select');
+                        const customer_select = document.getElementById('customer-select');
+
                         if (deal_with === "suppliers") {
-                            supplier_select.style.display = "block";
-                            customer_select.style.display = "none";
+                            supplier_select.style.display = "block"; // Tampilkan supplier select
                         } else if (deal_with === "customers") {
-                            supplier_select.style.display = "none";
-                            customer_select.style.display = "block";
+                            customer_select.style.display = "block"; // Tampilkan customer select
                         }
                     }
                 })
@@ -86,10 +111,13 @@
             const supplierId = document.getElementById('supplier_id').value;
             const customerId = document.getElementById('customer_id').value;
 
-            let selectedId = supplierId || customerId; // Pilih ID dari supplier atau customer yang terpilih
+            // Pastikan kita mendapatkan ID yang valid
+            let selectedId = supplierId !== "" ? supplierId : (customerId !== "" ? customerId : null); // Pilih ID dari supplier atau customer yang terpilih
+
+            // Cek apakah repaymentCategoryId dan selectedId valid
             if (repaymentCategoryId && selectedId) {
                 const apiUrl = `/api/generate_unpaid_invoice/${repaymentCategoryId}/${selectedId}`;
-
+                console.log(apiUrl);
                 fetch(apiUrl)
                     .then(response => {
                         if (!response.ok) {
@@ -98,13 +126,11 @@
                         return response.json();
                     })
                     .then(data => {
-                        // Cetak response ke console
                         console.log('Response from unpaid invoice API:', data);
                         if (Array.isArray(data.data)) {
                             if (data.data.length > 0) {
-                                populateRepaymentTable(data.data); // Panggil fungsi dengan array transaksi
+                                populateRepaymentTable(data.data);
                             } else {
-                                // Trigger Sweet Alert jika array kosong
                                 clearRepaymentTable();
                                 Swal.fire({
                                     icon: 'info',
@@ -114,7 +140,7 @@
                                 });
                             }
                         } else {
-                            console.error('Unexpected data format:', data); // Tampilkan pesan kesalahan jika format tidak sesuai
+                            console.error('Unexpected data format:', data);
                         }
                     })
                     .catch(error => {
@@ -126,13 +152,14 @@
                             confirmButtonText: 'OK'
                         });
                     });
+            } else {
+                console.error('Invalid repayment category or selected ID');
             }
         }
 
         function clearRepaymentTable() {
-            // Implementasikan logika untuk mengosongkan tabel di sini
             const tableBody = document.querySelector('#repayment-details-table tbody');
-            tableBody.innerHTML = ''; // Kosongkan isi dari tabel
+            tableBody.innerHTML = '';
         }
 
         function updateTotal(id) {
@@ -141,13 +168,11 @@
             const totalInput = document.getElementById(`details[${id}][total]`);
 
             if (discountInput && paidInput && totalInput) {
-                const discount = parseFloat(discountInput.value) || 0;
-                const paid = parseFloat(paidInput.value) || 0;
-                const left = parseFloat(paidInput.getAttribute('data-left')) || 0;
+                const discount = parseFloat(removeFormatting(discountInput.value)) || 0;
+                const paid = parseFloat(removeFormatting(paidInput.value)) || 0;
 
-                // Calculate total
                 const total = discount + paid;
-                totalInput.value = total.toFixed(0);
+                totalInput.value = formatCurrency(total); // Format the total value
 
                 updateGrandTotal();
             } else {
@@ -166,22 +191,33 @@
             const submitButton = document.getElementById('submit-button');
 
             if (totalInputs.length === 0) {
-                grandTotalElement.value = 0;
-                submitButton.disabled = true; // Disable submit button if no total inputs
+                grandTotalElement.value = formatCurrency(0); // Format as currency
+                submitButton.disabled = true;
                 return;
             }
 
             totalInputs.forEach(input => {
-                const value = parseFloat(input.value) || 0;
+                const value = parseFloat(removeFormatting(input.value)) || 0;
                 grandTotal += value;
             });
 
             if (grandTotalElement) {
-                grandTotalElement.value = grandTotal.toFixed(0);
-                submitButton.disabled = grandTotal === 0; // Enable submit button if grand total is greater than 0
+                grandTotalElement.value = formatCurrency(grandTotal); // Format the grand total
+                submitButton.disabled = grandTotal === 0;
             } else {
                 console.error('Element with ID "grand_total" not found.');
             }
+        }
+
+        function removeFormatting(value) {
+            const decimalSeparator = '{{ $setup->currency->decimal_separator }}'; // Example: ','
+            const thousandSeparator = '{{ $setup->currency->thousand_separator }}'; // Example: '.'
+
+            // Remove formatting using the currency separators
+            value = value.replace(new RegExp(`\\${thousandSeparator}`, 'g'), ''); // Remove thousand separator
+            value = value.replace(new RegExp(`\\${decimalSeparator}`, 'g'), '.'); // Convert decimal separator to dot
+
+            return value; // Return the cleaned value
         }
 
         function populateRepaymentTable(invoices) {
@@ -195,16 +231,16 @@
                     <input type="text" name="details[${item.id}][invoice_id]" id="details[${item.id}][invoice_id]" value="${item.id}" class="form-control" readonly>
                 </td>
                 <td>
-                    <input type="text" name="details[${item.id}][left]" id="details[${item.id}][left]" value="${item.left}" class="form-control" readonly>
+                    <input type="text" name="details[${item.id}][left]" id="details[${item.id}][left]" value="${formatCurrency(item.left)}" class="form-control" readonly>
                 </td>
                 <td>
-                    <input type="text" name="details[${item.id}][discount]" id="details[${item.id}][discount]" value="0" class="form-control discount" oninput="updateTotal('${item.id}')">
+                    <input type="text" name="details[${item.id}][discount]" id="details[${item.id}][discount]" value="${formatCurrency(0)}" class="form-control discount number-format" oninput="updateTotal('${item.id}')">
                 </td>
                 <td>
-                    <input type="text" id="details[${item.id}][paid]" value="${item.left}" class="form-control paid" oninput="updateTotal('${item.id}')">
+                    <input type="text" name="details[${item.id}][paid]" id="details[${item.id}][paid]" value="${formatCurrency(item.left)}" class="form-control paid number-format" oninput="updateTotal('${item.id}')">
                 </td>
                 <td>
-                    <input type="text" name="details[${item.id}][total]" id="details[${item.id}][total]" value="${item.left}" class="form-control total" readonly>
+                    <input type="text" name="details[${item.id}][total]" id="details[${item.id}][total]" value="${formatCurrency(item.left)}" class="form-control total" readonly>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger remove-row">Remove</button>
@@ -229,13 +265,10 @@
             document.querySelector('#repayment-details-table').addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {
                     e.target.closest('tr').remove();
-                    // console.log('Row removed, updating grand total.');
-                    updateTotal();
                     updateGrandTotal();
                 }
             });
 
-            // Initialize Select2
             function initializeSelect2() {
                 $('.select2').select2({
                     placeholder: "Select an option",
@@ -254,7 +287,12 @@
             document.getElementById('supplier_id').addEventListener('change', handleSupplierOrCustomerChange);
             document.getElementById('customer_id').addEventListener('change', handleSupplierOrCustomerChange);
 
-            // Initial Grand Total Calculation
+            easyNumberSeparator({
+                selector: '.number-format',
+                separator: '{{ $setup->currency->thousand_separator }}',
+                decimalSeparator: '{{ $setup->currency->decimal_separator }}'
+            });
+
             updateGrandTotal();
         });
     </script>
@@ -309,11 +347,8 @@
                                             <label for="supplier_id">
                                                 {{ ucwords(str_replace('_', ' ', 'supplier')) }}
                                             </label>
-                                            <select width="100%" id="supplier_id" name="supplier_id"
-                                                class="form-control select2"
-                                                onChange="handleSupplierOrCustomerChange(this)">
-                                                <option disabled selected>Select a
-                                                    {{ ucwords(str_replace('_', ' ', 'supplier')) }}</option>
+                                            <select width="100%" id="supplier_id" name="supplier_id" class="form-control select2" onChange="handleSupplierOrCustomerChange(this)">
+                                                <option value="" disabled selected>Select a supplier</option> <!-- Opsi default -->
                                                 @foreach ($suppliers as $supplier)
                                                     <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                                 @endforeach
@@ -323,11 +358,8 @@
                                             <label for="customer_id">
                                                 {{ ucwords(str_replace('_', ' ', 'customer')) }}
                                             </label>
-                                            <select width="100%" id="customer_id" name="customer_id"
-                                                class="form-control select2"
-                                                onChange="handleSupplierOrCustomerChange(this)">
-                                                <option disabled selected>Select a
-                                                    {{ ucwords(str_replace('_', ' ', 'customer')) }}</option>
+                                            <select width="100%" id="customer_id" name="customer_id" class="form-control select2" onChange="handleSupplierOrCustomerChange(this)">
+                                                <option value="" disabled selected>Select a customer</option> <!-- Opsi default -->
                                                 @foreach ($customers as $customer)
                                                     <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                                 @endforeach
@@ -365,7 +397,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td id="grand-total"><input type="number" name="grand_total"
+                                                    <td id="grand-total"><input type="text" name="grand_total"
                                                             id="grand_total" class="form-control" readonly></td>
                                                     <td>
                                                         <select width="100%" id="payment_gateway_id"

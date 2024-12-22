@@ -132,7 +132,7 @@
                             data_html += `
                                 <tr>
                                     <td style="padding-left: ${padding_left}px;">${account.name}</td>
-                                    <td>${number_format(account_total)}</td>
+                                    <td>${formatCurrency2(account_total)}</td>
                                 </tr>`;
 
                             return account_total;
@@ -148,7 +148,7 @@
                                 data_html += `
                                     <tr>
                                         <td style="padding-left: 10px;"><strong>${account_group.name}</strong></td>
-                                        <td>${number_format(group_total)}</td>
+                                        <td>${formatCurrency2(group_total)}</td>
                                     </tr>`;
 
                                 total_revenue += group_total;
@@ -176,7 +176,7 @@
                                 data_html += `
                                     <tr>
                                         <td style="padding-left: 10px;"><strong>${account_group.name}</strong></td>
-                                        <td>${number_format(group_total)}</td>
+                                        <td>${formatCurrency2(group_total)}</td>
                                     </tr>`;
 
                                 total_cogs += group_total;
@@ -204,7 +204,7 @@
                                 data_html += `
                                     <tr>
                                         <td style="padding-left: 10px;"><strong>${account_group.name}</strong></td>
-                                        <td>${number_format(group_total)}</td>
+                                        <td>${formatCurrency2(group_total)}</td>
                                     </tr>`;
 
                                 total_expenses += group_total;
@@ -226,10 +226,10 @@
                         console.log('Generated HTML:', data_html);
 
                         $('#income_statement_table tbody').append(data_html);
-                        $('#total_revenue').text(number_format(total_revenue));
-                        $('#total_cogs').text(number_format(total_cogs));
-                        $('#total_expenses').text(number_format(total_expenses));
-                        $('#net_income').text(number_format(total_revenue - total_cogs - total_expenses));
+                        $('#total_revenue').text(formatCurrency2(total_revenue));
+                        $('#total_cogs').text(formatCurrency2(total_cogs));
+                        $('#total_expenses').text(formatCurrency2(total_expenses));
+                        $('#net_income').text(formatCurrency2(total_revenue - total_cogs - total_expenses));
                     }
                 });
             });
@@ -260,11 +260,11 @@
                 });
             });
 
-            function number_format(number) {
+            function formatCurrency2(number) {
                 if (number < 0) {
-                    return `(${Math.abs(number).toLocaleString('en-US')})`;
+                    return `(${formatCurrency(Math.abs(number))})`;
                 }
-                return number.toLocaleString('en-US');
+                return `${formatCurrency(number)}`;
             }
         });
     </script>

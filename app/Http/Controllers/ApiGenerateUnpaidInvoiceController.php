@@ -18,7 +18,7 @@ class ApiGenerateUnpaidInvoiceController extends Controller
         if($repayment_category->deal_with == "suppliers"){
             $data = Invoice::where("supplier_id", $supplier_customer_id)->where("left", ">", 0)->get();
         } else {
-            $data = Invoice::where("customer", $supplier_customer_id)->where("left", ">", 0)->get();
+            $data = Invoice::where("customer_id", $supplier_customer_id)->where("left", ">", 0)->get();
         }
         return response()->json([
             'data' => $data,

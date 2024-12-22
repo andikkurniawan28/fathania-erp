@@ -155,7 +155,7 @@
                                 assets_html += `
                                     <tr>
                                         <td><div class="account_group text-dark"><strong>${account_group.name}</strong></div></td>
-                                        <td><div class="text-dark"><strong>${number_format(group_total)}</strong></div></td>
+                                        <td><div class="text-dark"><strong>${formatCurrency2(group_total)}</strong></div></td>
                                     </tr>`;
 
                                 total_assets += group_total;
@@ -166,7 +166,7 @@
                                     assets_html += `
                                         <tr>
                                             <td><div class="main_account text-dark">${main_account.name}</div></td>
-                                            <td>${number_format(main_total)}</td>
+                                            <td>${formatCurrency2(main_total)}</td>
                                         </tr>`;
 
                                     $.each(main_account.sub_account, function(index, sub_account) {
@@ -175,7 +175,7 @@
                                         assets_html += `
                                             <tr>
                                                 <td><div class="sub_account text-dark">${sub_account.name}</div></td>
-                                                <td>${number_format(sub_total)}</td>
+                                                <td>${formatCurrency2(sub_total)}</td>
                                             </tr>`;
 
                                         $.each(sub_account.account, function(index, account) {
@@ -184,7 +184,7 @@
                                             assets_html += `
                                                 <tr>
                                                     <td><div class="account text-dark">${account.name}</div></td>
-                                                    <td>${number_format(account_total)}</td>
+                                                    <td>${formatCurrency2(account_total)}</td>
                                                 </tr>`;
                                         });
                                     });
@@ -195,7 +195,7 @@
                         $('#assets_table tbody').append(`
                             <tr>
                                 <td><strong>Total Assets</strong></td>
-                                <td><strong>${number_format(total_assets)}</strong></td>
+                                <td><strong>${formatCurrency2(total_assets)}</strong></td>
                             </tr>
                         `);
 
@@ -208,7 +208,7 @@
                                 liabilities_html += `
                                     <tr>
                                         <td><div class="account_group text-dark"><strong>${account_group.name}</strong></div></td>
-                                        <td><div class="text-dark"><strong>${number_format(group_total)}</strong></div></td>
+                                        <td><div class="text-dark"><strong>${formatCurrency2(group_total)}</strong></div></td>
                                     </tr>`;
 
                                 total_liabilities += group_total;
@@ -219,7 +219,7 @@
                                     liabilities_html += `
                                         <tr>
                                             <td><div class="main_account text-dark">${main_account.name}</div></td>
-                                            <td>${number_format(main_total)}</td>
+                                            <td>${formatCurrency2(main_total)}</td>
                                         </tr>`;
 
                                     $.each(main_account.sub_account, function(index, sub_account) {
@@ -228,7 +228,7 @@
                                         liabilities_html += `
                                             <tr>
                                                 <td><div class="sub_account text-dark">${sub_account.name}</div></td>
-                                                <td>${number_format(sub_total)}</td>
+                                                <td>${formatCurrency2(sub_total)}</td>
                                             </tr>`;
 
                                         $.each(sub_account.account, function(index, account) {
@@ -237,7 +237,7 @@
                                             liabilities_html += `
                                                 <tr>
                                                     <td><div class="account text-dark">${account.name}</div></td>
-                                                    <td>${number_format(account_total)}</td>
+                                                    <td>${formatCurrency2(account_total)}</td>
                                                 </tr>`;
                                         });
                                     });
@@ -248,7 +248,7 @@
                         $('#liabilities_table tbody').append(`
                             <tr>
                                 <td><strong>Total Liabilities</strong></td>
-                                <td><strong>${number_format(total_liabilities)}</strong></td>
+                                <td><strong>${formatCurrency2(total_liabilities)}</strong></td>
                             </tr>
                         `);
 
@@ -261,7 +261,7 @@
                                 equity_html += `
                                     <tr>
                                         <td><div class="account_group text-dark"><strong>${account_group.name}</strong></div></td>
-                                        <td><div class="text-dark"><strong>${number_format(group_total)}</strong></div></td>
+                                        <td><div class="text-dark"><strong>${formatCurrency2(group_total)}</strong></div></td>
                                     </tr>`;
 
                                 total_equity += group_total;
@@ -272,7 +272,7 @@
                                     equity_html += `
                                         <tr>
                                             <td><div class="main_account text-dark">${main_account.name}</div></td>
-                                            <td>${number_format(main_total)}</td>
+                                            <td>${formatCurrency2(main_total)}</td>
                                         </tr>`;
 
                                     $.each(main_account.sub_account, function(index, sub_account) {
@@ -281,7 +281,7 @@
                                         equity_html += `
                                             <tr>
                                                 <td><div class="sub_account text-dark">${sub_account.name}</div></td>
-                                                <td>${number_format(sub_total)}</td>
+                                                <td>${formatCurrency2(sub_total)}</td>
                                             </tr>`;
 
                                         $.each(sub_account.account, function(index, account) {
@@ -290,7 +290,7 @@
                                             equity_html += `
                                                 <tr>
                                                     <td><div class="account text-dark">${account.name}</div></td>
-                                                    <td>${number_format(account_total)}</td>
+                                                    <td>${formatCurrency2(account_total)}</td>
                                                 </tr>`;
                                         });
                                     });
@@ -301,7 +301,7 @@
                         $('#equity_table tbody').append(`
                             <tr>
                                 <td><strong>Total Equity</strong></td>
-                                <td><strong>${number_format(total_equity)}</strong></td>
+                                <td><strong>${formatCurrency2(total_equity)}</strong></td>
                             </tr>
                         `);
 
@@ -309,11 +309,11 @@
                         $('#comparison_table tbody').append(`
                             <tr>
                                 <td><strong>Total Liabilities + Equity</strong></td>
-                                <td><strong>${number_format(total_liabilities + total_equity)}</strong></td>
+                                <td><strong>${formatCurrency2(total_liabilities + total_equity)}</strong></td>
                             </tr>
                             <tr>
                                 <td><strong>Total Assets</strong></td>
-                                <td><strong>${number_format(total_assets)}</strong></td>
+                                <td><strong>${formatCurrency2(total_assets)}</strong></td>
                             </tr>
                         `);
                     }
@@ -349,11 +349,11 @@
             });
         });
 
-        function number_format(number) {
+        function formatCurrency2(number) {
             if (number < 0) {
-                return `(${Math.abs(number).toLocaleString('en-US')})`;
+                return `(${formatCurrency(Math.abs(number))})`;
             }
-            return number.toLocaleString('en-US');
+            return `${formatCurrency(number)}`;
         }
     </script>
 @endsection
