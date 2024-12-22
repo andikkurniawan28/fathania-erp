@@ -26,8 +26,8 @@
                                 <th>{{ ucwords(str_replace('_', ' ', 'name')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'sub_category')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'unit')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'sell')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'buy')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'sell')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'buy')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 @foreach($warehouses as $warehouse)
                                 <th>{{ ucwords(str_replace('_', ' ', $warehouse->name)) }}</th>
                                 @endforeach

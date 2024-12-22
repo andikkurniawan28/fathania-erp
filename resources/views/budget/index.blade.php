@@ -28,9 +28,9 @@
                                 <th>{{ ucwords(str_replace('_', ' ', 'account')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'start')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'end')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'amount')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'spent')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'remaining')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'amount')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'spent')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'remaining')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'action')) }}</th>
                             </tr>
                         </thead>

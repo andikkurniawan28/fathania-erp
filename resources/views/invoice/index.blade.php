@@ -28,8 +28,8 @@
                                 <th>{{ ucwords(str_replace('_', ' ', 'supplier')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'customer')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'warehouse')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'grand_total')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'left')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'grand_total')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'left')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'action')) }}</th>
                             </tr>
                         </thead>

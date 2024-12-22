@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('app_name');
             $table->string('company_name');
             $table->string('company_logo')->nullable();
+            $table->string('company_phone')->nullable();
+            $table->string('company_email')->nullable();
+            $table->string('company_address')->nullable();
+            $table->string('company_city')->nullable();
+            $table->string('company_country')->nullable();
             $table->string('retained_earning_id');
             $table->foreign('retained_earning_id')->references('id')->on('accounts');
             $table->string('material_inventory_id');

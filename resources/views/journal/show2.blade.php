@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>
+      {{ ucwords(str_replace('_', ' ', $setup->app_name)) }} |
+      {{ ucwords(str_replace(['.', '_', 'index'], [' ', ' ', ''], Route::currentRouteName())) }}</title>
+  <link rel="icon" type="image/x-icon" href="{{ asset($setup->company_logo) }}">
   <link rel="stylesheet" href="{{ asset('inv/style.css') }}" type="text/css" media="all" />
 </head>
 
@@ -55,11 +58,11 @@
               <td class="w-1/2 align-top">
                 <div class="text-sm text-neutral-600">
                   <p class="font-bold">{{ $setup->company_name }}</p>
-                  <p>Number: 23456789</p>
-                  <p>VAT: 23456789</p>
-                  <p>6622 Abshire Mills</p>
-                  <p>Port Orlofurt, 05820</p>
-                  <p>United States</p>
+                  <p>Phone: {{ $setup->company_phone }}</p>
+                  <p>Email: {{ $setup->company_email }}</p>
+                  <p>Address: {{ $setup->company_address }}</p>
+                  <p>{{ $setup->company_city }}</p>
+                  <p>{{ $setup->company_country }}</p>
                 </div>
               </td>
               {{-- <td class="w-1/2 align-top text-right">

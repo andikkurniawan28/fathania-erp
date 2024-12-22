@@ -8,6 +8,7 @@
     <title>
         {{ ucwords(str_replace('_', ' ', $setup->app_name)) }} |
         {{ ucwords(str_replace(['.', '_', 'index'], [' ', ' ', ''], Route::currentRouteName())) }}</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset($setup->company_logo) }}">
     <meta name="description" content="" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('template.sneat.style')

@@ -27,7 +27,7 @@
                                 <th>{{ ucwords(str_replace('_', ' ', 'category')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'supplier')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'customer')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'grand_total')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'grand_total')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'action')) }}</th>
                             </tr>
                         </thead>
@@ -79,9 +79,7 @@
                         name: 'grand_total',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {

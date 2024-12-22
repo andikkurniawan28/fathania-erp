@@ -68,8 +68,8 @@
                             <tr>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'date')) }}</th>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'description')) }}</th>
-                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'amount')) }}</th>
-                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'balance')) }}</th>
+                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'amount')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th class="text-right">{{ ucwords(str_replace('_', ' ', 'balance')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th class="text-left">{{ ucwords(str_replace('_', ' ', 'user')) }}</th>
                             </tr>
                         </thead>

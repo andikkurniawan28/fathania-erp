@@ -1,130 +1,165 @@
-@extends('template.sneat.master')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title')
-    {{ ucwords(str_replace('_', ' ', 'show_invoice')) }}
-@endsection
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+      {{ ucwords(str_replace('_', ' ', $setup->app_name)) }} |
+      {{ ucwords(str_replace(['.', '_', 'index'], [' ', ' ', ''], Route::currentRouteName())) }}</title>
+  <link rel="icon" type="image/x-icon" href="{{ asset($setup->company_logo) }}">
+  <link rel="stylesheet" href="{{ asset('inv/style.css') }}" type="text/css" media="all" />
+</head>
 
-@section('invoice-active')
-    {{ 'active' }}
-@endsection
-
-@section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('invoice.index') }}">{{ ucwords(str_replace('_', ' ', 'invoice')) }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@yield('title')</li>
-            </ol>
-        </nav>
-
-        <div class="row">
-            <div class="col-xxl">
-                <div class="card mb-4">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <h5 class="mb-0">@yield('title')</h5>
-                        <a href="{{ route('invoice.index') }}" class="btn btn-primary">Back to List</a>
-                    </div>
-                    <div class="card-body">
-                        <h6>Invoice Details</h6>
-                        <div class="row mb-3">
-                            <div class="col-sm-12">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Category</th>
-                                                <th>Customer/Supplier</th>
-                                                <th>Date</th>
-                                                <th>Timestamp</th>
-                                                <th>Warehouse</th>
-                                                <th>Admin</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ $invoice->id }}</td>
-                                                <td>{{ $invoice->invoice_category->name }}</td>
-                                                <td>{{ $invoice->supplier->name ?? $invoice->customer->name }}</td> <!-- Assuming 'party' refers to customer/supplier -->
-                                                <td>{{ $invoice->created_at->format('d M Y') }}</td>
-                                                <td>{{ $invoice->created_at }}</td>
-                                                <td>{{ $invoice->warehouse->name }}</td>
-                                                <td>{{ $invoice->user->name }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <br>
-
-                                <h6>Invoice Details</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Material</th>
-                                                <th>Qty</th>
-                                                <th>Price</th>
-                                                <th>Discount</th>
-                                                <th>Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($invoice->invoice_detail as $detail)
-                                                <tr>
-                                                    <td>{{ $detail->item_order }}</td>
-                                                    <td>{{ $detail->material->name }}</td> <!-- Assuming 'material' refers to a product/service -->
-                                                    <td>{{ $detail->qty }}</td>
-                                                    <td>{{ number_format($detail->price, 0) }}</td>
-                                                    <td>{{ number_format($detail->discount, 0) }}</td>
-                                                    <td>{{ number_format($detail->total, 0) }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th colspan="5">Subtotal</th>
-                                                <th>{{ number_format($invoice->invoice_detail->sum('total'), 0) }}</th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                                <br>
-
-                                <h6>Invoice Summary</h6>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Subtotal</th>
-                                                <th>Taxes</th>
-                                                <th>Freight</th>
-                                                <th>Discount</th>
-                                                <th>Grand Total</th>
-                                                <th>Left</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>{{ number_format($invoice->subtotal, 0) }}</td>
-                                                <td>{{ number_format($invoice->taxes, 0) }}</td>
-                                                <td>{{ number_format($invoice->freight, 0) }}</td>
-                                                <td>{{ number_format($invoice->discount, 0) }}</td>
-                                                <td>{{ number_format($invoice->grand_total, 0) }}</td>
-                                                <td>{{ number_format($invoice->left, 0) }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <br>
-                                <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
-                            </div>
-                        </div>
-                    </div>
+<body>
+  <div>
+    <div class="py-4">
+      <div class="px-14 py-6">
+        <table class="w-full border-collapse border-spacing-0">
+          <tbody>
+            <tr>
+              <td class="w-full align-top">
+                <div>
+                  <img src="{{ asset($setup->company_logo) }}" class="h-12" />
                 </div>
-            </div>
+              </td>
+
+              <td class="align-top">
+                <div class="text-sm">
+                  <table class="border-collapse border-spacing-0">
+                    <tbody>
+                      <tr>
+                        <td class="border-r pr-4">
+                          <div>
+                            <p class="whitespace-nowrap text-slate-400 text-right">Date</p>
+                            <p class="whitespace-nowrap font-bold text-main text-right">{{ date('d-m-Y', strtotime($invoice->created_at)) }}</p>
+                          </div>
+                        </td>
+                        <td class="pl-4">
+                          <div>
+                            <p class="whitespace-nowrap text-slate-400 text-right">Invoice #</p>
+                            <p class="whitespace-nowrap font-bold text-main text-right">{{ $invoice->id }}</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-slate-100 px-14 py-6 text-sm">
+        <table class="w-full border-collapse border-spacing-0">
+          <tbody>
+            <tr>
+              <td class="w-1/2 align-top">
+                <div class="text-sm text-neutral-600">
+                  <p class="font-bold">{{ $setup->company_name }}</p>
+                  <p>Phone: {{ $setup->company_phone }}</p>
+                  <p>Email: {{ $setup->company_email }}</p>
+                  <p>Address: {{ $setup->company_address }}</p>
+                  <p>{{ $setup->company_city }}</p>
+                  <p>{{ $setup->company_country }}</p>
+                </div>
+              </td>
+              {{-- Uncomment if you want to show customer/supplier details
+              <td class="w-1/2 align-top text-right">
+                <div class="text-sm text-neutral-600">
+                  <p class="font-bold">Customer Company</p>
+                  <p>Number: 123456789</p>
+                  <p>VAT: 23456789</p>
+                  <p>9552 Vandervort Spurs</p>
+                  <p>Paradise, 43325</p>
+                  <p>United States</p>
+                </div>
+              </td>
+              --}}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="px-14 py-10 text-sm text-neutral-700">
+        {{-- <h6>Invoice Details</h6> --}}
+        <div class="table-responsive">
+          <table class="w-full border-collapse border-spacing-0">
+            <thead>
+              <tr>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">#</td>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">Material</td>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">Qty</td>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">Price<sub>({{ $setup->currency->symbol }})</sub></td>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">Discount<sub>({{ $setup->currency->symbol }})</sub></td>
+                <td class="border-b-2 border-main pb-3 pl-3 font-bold text-main text-center">Total<sub>({{ $setup->currency->symbol }})</sub></td>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($invoice->invoice_detail as $detail)
+                <tr>
+                  <td class="border-b py-3 pl-3 text-center">{{ $detail->item_order }}</td>
+                  <td class="border-b py-3 pl-3 text-center">{{ $detail->material->name }}</td>
+                  <td class="border-b py-3 pl-3 text-center">{{ $detail->qty }}</td>
+                  <td class="border-b py-3 pl-3 text-center">{{ number_format($detail->price, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                  <td class="border-b py-3 pl-3 text-center">{{ number_format($detail->discount, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                  <td class="border-b py-3 pl-3 text-center">{{ number_format($detail->total, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                </tr>
+              @endforeach
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="5">Subtotal</th>
+                <th>{{ number_format($invoice->invoice_detail->sum('total'), 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+              </tr>
+              <tr>
+                <th colspan="5">Taxes</th>
+                <th>{{ number_format($invoice->taxes, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+              </tr>
+              <tr>
+                <th colspan="5">Freight</th>
+                <th>{{ number_format($invoice->freight, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+              </tr>
+              <tr>
+                <th colspan="5">Discount</th>
+                <th>{{ number_format($invoice->discount, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+              </tr>
+              <tr>
+                <th colspan="5">Grand Total</th>
+                <th>{{ number_format($invoice->grand_total, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</th>
+              </tr>
+            </tfoot>
+          </table>
         </div>
+        <br>
+
+        {{-- <div class="table-responsive">
+          <table class="w-full border-collapse border-spacing-0">
+            <thead>
+              <tr>
+                <th>Freight<sub>({{ $setup->currency->symbol }})</sub></th>
+                <th>Discount<sub>({{ $setup->currency->symbol }})</sub></th>
+                <th>Grand Total<sub>({{ $setup->currency->symbol }})</sub></th>
+                <th>Left<sub>({{ $setup->currency->symbol }})</sub></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ number_format($invoice->freight, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                <td>{{ number_format($invoice->discount, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                <td>{{ number_format($invoice->grand_total, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+                <td>{{ number_format($invoice->left, 2, $setup->currency->decimal_separator, $setup->currency->thousand_separator) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <br> --}}
+        <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
+      </div>
     </div>
-@endsection
+  </div>
+</body>
+
+</html>

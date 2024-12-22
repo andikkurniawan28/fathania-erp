@@ -1,5 +1,4 @@
 <!-- Favicon -->
-<link rel="icon" type="image/x-icon" href="{{ asset($setup->company_logo) }}">
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
