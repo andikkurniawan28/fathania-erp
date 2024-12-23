@@ -44,7 +44,10 @@
                                     <select class="form-control select2" id="account" name="account_id" width="100%" required autofocus>
                                         <option disabled selected>Select a {{ ucwords(str_replace('_', ' ', 'account')) }} :</option>
                                         @foreach($accounts as $account)
-                                            <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                            <option value="{{ $account->id }}">
+                                                {{ $account->id }} -
+                                                {{ $account->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -73,7 +76,7 @@
                                     {{ ucwords(str_replace('_', ' ', 'amount')) }}
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" step="any" class="form-control" id="amount" name="amount" value="{{ old("amount") }}" required autofocus>
+                                    <input type="text" step="any" class="form-control number-format" id="amount" name="amount" value="{{ old("amount") }}" required autofocus>
                                 </div>
                             </div>
 

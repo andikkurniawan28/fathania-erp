@@ -51,20 +51,22 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="sell_price">
-                                    {{ ucwords(str_replace('_', ' ', 'sell_price')) }}
+                                <label class="col-sm-2 col-form-label" for="buy_price">
+                                    {{ ucwords(str_replace('_', ' ', 'buy_price')) }}
+                                    <sub>({{ $setup->currency->symbol }})</sub>
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" step="any" class="form-control" id="sell_price" name="sell_price" value="{{ old("sell_price") }}">
+                                    <input type="text" step="any" class="form-control number-format" id="buy_price" name="buy_price" value="{{ old("buy_price") }}" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label" for="buy_price">
-                                    {{ ucwords(str_replace('_', ' ', 'buy_price')) }}
+                                <label class="col-sm-2 col-form-label" for="sell_price">
+                                    {{ ucwords(str_replace('_', ' ', 'sell_price')) }}
+                                    <sub>({{ $setup->currency->symbol }})</sub>
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" step="any" class="form-control" id="buy_price" name="buy_price" value="{{ old("buy_price") }}">
+                                    <input type="text" step="any" class="form-control number-format" id="sell_price" name="sell_price" value="{{ old("sell_price") }}" required>
                                 </div>
                             </div>
 

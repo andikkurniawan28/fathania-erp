@@ -50,11 +50,15 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $request->request->add([
+            "buy_price" => Setup::checkFormat($request->buy_price),
+            "sell_price" => Setup::checkFormat($request->sell_price),
+        ]);
         $validated = $request->validate([
             "unit_id" => "required",
             "name" => "required|unique:services",
-            "sell_price" => "nullable",
-            "buy_price" => "nullable",
+            "sell_price" => "required",
+            "buy_price" => "required",
         ]);
         $service = Service::create($validated);
         return redirect()->back()->with("success", "Service has been created");
@@ -84,12 +88,16 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->request->add([
+            "buy_price" => Setup::checkFormat($request->buy_price),
+            "sell_price" => Setup::checkFormat($request->sell_price),
+        ]);
         $service = Service::findOrFail($id);
         $validated = $request->validate([
             "unit_id" => "required",
             'name' => 'required|unique:services,name,' . $service->id,
-            "sell_price" => "nullable",
-            "buy_price" => "nullable",
+            "sell_price" => "required",
+            "buy_price" => "required",
         ]);
         $service->update($validated);
         return redirect()->route('service.index')->with("success", "Service has been updated");

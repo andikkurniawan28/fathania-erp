@@ -57,12 +57,16 @@ class MaterialController extends Controller
      */
     public function store(Request $request)
     {
+        $request->request->add([
+            "buy_price" => Setup::checkFormat($request->buy_price),
+            "sell_price" => Setup::checkFormat($request->sell_price),
+        ]);
         $validated = $request->validate([
             "name" => "required|unique:materials",
             "material_sub_category_id" => "required",
             "unit_id" => "required",
-            "sell_price" => "nullable",
-            "buy_price" => "nullable",
+            "sell_price" => "required",
+            "buy_price" => "required",
         ]);
         $material = Material::create($validated);
         return redirect()->back()->with("success", "Material has been created");
@@ -94,12 +98,16 @@ class MaterialController extends Controller
     public function update(Request $request, $id)
     {
         $material = Material::findOrFail($id);
+        $request->request->add([
+            "buy_price" => Setup::checkFormat($request->buy_price),
+            "sell_price" => Setup::checkFormat($request->sell_price),
+        ]);
         $validated = $request->validate([
             'name' => 'required|unique:materials,name,' . $material->id,
             "material_sub_category_id" => "required",
             "unit_id" => "required",
-            "sell_price" => "nullable",
-            "buy_price" => "nullable",
+            "sell_price" => "required",
+            "buy_price" => "required",
         ]);
         $material->update($validated);
         return redirect()->route('material.index')->with("success", "Material has been updated");

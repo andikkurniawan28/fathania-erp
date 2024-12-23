@@ -60,7 +60,25 @@ class InventoryAdjustController extends Controller
      */
     public function store(Request $request)
     {
-        $stock_adjust = StockAdjust::findOrFail($request->stock_adjust_id) ;
+        $request->request->add([
+            'grand_total' => Setup::checkFormat($request->grand_total),
+        ]);
+        $data = $request->all();
+        if (isset($data['details']) && is_array($data['details'])) {
+            foreach ($data['details'] as $index => $detail) {
+                if (isset($detail['price'])) {
+                    $data['details'][$index]['price'] = Setup::checkFormat($detail['price']);
+                }
+                if (isset($detail['qty'])) {
+                    $data['details'][$index]['qty'] = Setup::checkFormat($detail['qty']);
+                }
+                if (isset($detail['total'])) {
+                    $data['details'][$index]['total'] = Setup::checkFormat($detail['total']);
+                }
+            }
+        }
+        $request->merge($data);
+        $stock_adjust = StockAdjust::findOrFail($request->stock_adjust_id);
         $request = self::storeValidate($request);
         try {
             DB::beginTransaction();
@@ -120,8 +138,11 @@ class InventoryAdjustController extends Controller
         }
     }
 
-    public static function storeValidate($request){
+    public static function storeValidate($request) {
+        // Add the authenticated user ID to the request
         $request->request->add(['user_id' => auth()->id()]);
+
+        // Validate the request data
         $request->validate([
             'stock_adjust_id' => 'required|exists:stock_adjusts,id',
             'user_id' => 'required|exists:users,id',
@@ -133,6 +154,7 @@ class InventoryAdjustController extends Controller
             'details.*.price' => 'required|numeric',
             'details.*.total' => 'required|numeric',
         ]);
+
         return $request;
     }
 
@@ -167,6 +189,9 @@ class InventoryAdjustController extends Controller
     public static function saveBody($inventory_adjust, $request, $item_order, $stock_adjust){
         $stock_normal_balance_id = $stock_adjust->stock_normal_balance_id;
         foreach ($request->details as $detail) {
+            $detail['qty'] = Setup::checkFormat($detail['qty']);
+            $detail['price'] = Setup::checkFormat($detail['price']);
+            $detail['total'] = Setup::checkFormat($detail['total']);
             InventoryAdjustEntry::create([
                 'inventory_adjust_id' => $inventory_adjust->id,
                 'material_id' => $detail['material_id'],

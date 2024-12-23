@@ -407,7 +407,9 @@
                                                             </option>
                                                             @foreach ($payment_gateways as $payment_gateway)
                                                                 <option value="{{ $payment_gateway->id }}">
-                                                                    {{ $payment_gateway->name }}</option>
+                                                                    {{ $payment_gateway->id }} -
+                                                                    {{ $payment_gateway->name }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </td>

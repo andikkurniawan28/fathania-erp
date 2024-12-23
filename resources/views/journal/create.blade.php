@@ -55,7 +55,10 @@
                                                     <select name="details[0][account_id]" class="form-control select2" required>
                                                         <option disabled selected>Select an {{ ucwords(str_replace('_', ' ', 'account')) }} :</option>
                                                         @foreach($accounts as $account)
-                                                            <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                                            <option value="{{ $account->id }}">
+                                                                {{ $account->id }} -
+                                                                {{ $account->name }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </td>

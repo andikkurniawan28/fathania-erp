@@ -49,10 +49,12 @@ class BudgetController extends Controller
      */
     public function store(Request $request)
     {
+        $amount = Setup::checkFormat($request->amount);
         $request->request->add([
+            "amount" => $amount,
             "user_id" => auth()->id(),
             "spent" => 0,
-            "remaining" => $request->amount,
+            "remaining" => $amount,
         ]);
         $validated = $request->validate([
             "name" => "required|unique:budgets",
@@ -93,8 +95,10 @@ class BudgetController extends Controller
     public function update(Request $request, $id)
     {
         $budget = Budget::findOrFail($id);
+        $amount = Setup::checkFormat($request->amount);
         $request->request->add([
-            "remaining" => $request->amount - $budget->spent,
+            "amount" => $amount,
+            "remaining" => $amount - $budget->spent,
         ]);
         $validated = $request->validate([
             'name' => 'required|unique:budgets,name,' . $budget->id,

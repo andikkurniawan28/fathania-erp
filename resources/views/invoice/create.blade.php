@@ -535,7 +535,10 @@
                                                             class="form-control select2">
                                                             <option disabled selected>Select a {{ ucwords(str_replace('_', ' ', 'payment_gateway')) }}</option>
                                                             @foreach ($payment_gateways as $payment_gateway)
-                                                                <option value="{{ $payment_gateway->id }}">{{ $payment_gateway->name }}</option>
+                                                                <option value="{{ $payment_gateway->id }}">
+                                                                    {{ $payment_gateway->id }} -
+                                                                    {{ $payment_gateway->name }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     </td>

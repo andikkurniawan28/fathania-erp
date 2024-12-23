@@ -33,24 +33,17 @@
             width: 20%;
         }
 
-        #inventory_adjust-details-table .col-discount {
-            width: 15%;
-        }
-
         #inventory_adjust-details-table .col-total {
             width: 20%;
         }
 
         #inventory_adjust-details-table th:last-child,
         #inventory_adjust-details-table td:last-child {
-            width: auto;
-            /* For Action column */
+            width: auto; /* For Action column */
         }
     </style>
 
-
     <script>
-
         function fetchMaterialInfo(selectElement) {
             const materialId = selectElement.value;
             const apiUrl = `/api/generate_material_info/${materialId}`;
@@ -63,56 +56,58 @@
                     return response.json();
                 })
                 .then(materialData => {
-                    // Get the selected inventory_adjust category
-                    const inventory_adjustCategorySelect = document.getElementById('stock_adjust_id');
-                    const inventory_adjustCategoryId = inventory_adjustCategorySelect.value;
                     const priceField = selectElement.closest('tr').querySelector('.price');
-                    // const discountField = selectElement.closest('tr').querySelector('.discount');
                     const unitField = selectElement.closest('tr').querySelector('.unit');
                     const priceKey = "buy_price";
-                    // discountField.value = 0;
-                    priceField.value = materialData.material[priceKey] !== null ? materialData.material[priceKey] : 0;
+
+                    priceField.value = materialData.material[priceKey] !== null ? formatCurrency(materialData.material[priceKey]) : 0;
                     unitField.innerHTML = materialData.material.unit.symbol;
+                    updateTotals(); // Update totals after fetching material info
                 })
                 .catch(error => {
                     console.error('There has been a problem with your fetch operation:', error);
                 });
         }
 
+        function formatCurrency(value) {
+            const decimalSeparator = '{{ $setup->currency->decimal_separator }}'; // e.g., ','
+            const thousandSeparator = '{{ $setup->currency->thousand_separator }}'; // e.g., '.'
+
+            // Format the number
+            value = parseFloat(value).toFixed(2); // Format to 2 decimal places
+            let parts = value.split('.');
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandSeparator); // Add thousand separator
+            return parts.join(decimalSeparator); // Join with decimal separator
+        }
+
+        function removeFormatting(value) {
+            const decimalSeparator = '{{ $setup->currency->decimal_separator }}'; // e.g., ','
+            const thousandSeparator = '{{ $setup->currency->thousand_separator }}'; // e.g., '.'
+
+            // Remove formatting using the currency separators
+            value = value.replace(new RegExp(`\\${thousandSeparator}`, 'g'), ''); // Remove thousand separator
+            value = value.replace(new RegExp(`\\${decimalSeparator}`, 'g'), '.'); // Convert decimal separator to dot
+
+            return value; // Return the cleaned value
+        }
+
         function updateTotals() {
             let totalSubtotal = 0;
-            let totalFreight = parseFloat(document.getElementById('freight')?.value) || 0;
-            // let totalDiscount = parseFloat(document.getElementById('discount')?.value) || 0;
-            let totalPaid = parseFloat(document.getElementById('paid')?.value) || 0;
 
             document.querySelectorAll('.total').forEach(function(input) {
-                totalSubtotal += parseFloat(input.value) || 0;
+                totalSubtotal += parseFloat(removeFormatting(input.value)) || 0;
             });
 
-            // let totalTaxes = (parseFloat(document.getElementById('rate').value) / 100) * totalSubtotal;
-
-            const grandTotal = totalSubtotal + totalFreight;
-            // const left = grandTotal - totalPaid;
-            // const paid = totalGiven - left;
-
-            // document.getElementById('subtotal').value = totalSubtotal.toFixed(0);
-            // document.getElementById('taxes').value = totalTaxes.toFixed(0);
-            document.getElementById('grand_total').value = grandTotal.toFixed(0);
-            // document.getElementById('left').value = left.toFixed(0);
+            document.getElementById('grand_total').value = formatCurrency(totalSubtotal);
 
             // Enable/Disable submit button based on totals
             const submitButton = document.getElementById('submit-button');
-            if (totalSubtotal > 0 && grandTotal >= 0) {
-                submitButton.disabled = false;
-            } else {
-                submitButton.disabled = true;
-            }
+            submitButton.disabled = !(totalSubtotal > 0);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             let rowCount = 1;
 
-            // Initialize Select2 for dynamically added rows
             function initializeSelect2() {
                 $('.select2').select2({
                     placeholder: "Select an option",
@@ -129,7 +124,7 @@
                 let newRow = `
                     <tr>
                         <td>
-                            <select width="100%" name="details[${rowCount}][material_id]" class="form-control select2 material-select" required onChange="fetchMaterialInfo(this)">
+                            <select width="100%" name="details[${rowCount}][material_id]" class="form-control select2" required onchange="fetchMaterialInfo(this)">
                                 <option disabled selected>Select a material</option>
                                 @foreach ($materials as $material)
                                     <option value="{{ $material->id }}">{{ $material->name }}</option>
@@ -137,14 +132,14 @@
                             </select>
                         </td>
                         <td>
-                            <input type="number" name="details[${rowCount}][qty]" class="form-control qty" step="0.01" required>
+                            <input type="text" name="details[${rowCount}][qty]" class="form-control qty number-format" step="0.01" required>
                             <span class="unit"></span>
                         </td>
                         <td>
-                            <input type="number" name="details[${rowCount}][price]" class="form-control price" step="0.01" required>
+                            <input type="text" name="details[${rowCount}][price]" class="form-control price number-format" step="0.01" required>
                         </td>
                         <td>
-                            <input type="number" name="details[${rowCount}][total]" class="form-control total" step="0.01" readonly>
+                            <input type="text" name="details[${rowCount}][total]" class="form-control total" readonly>
                         </td>
                         <td>
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
@@ -154,13 +149,8 @@
                 tableBody.insertAdjacentHTML('beforeend', newRow);
                 initializeSelect2(); // Re-initialize Select2 for new row
                 rowCount++;
-
-                // Fetch material info for the newly added select element
-                const newMaterialSelect = tableBody.querySelector(`tr:last-child .material-select`);
-                fetchMaterialInfo(newMaterialSelect);
                 updateTotals(); // Update totals after adding new row
             });
-
 
             document.querySelector('#inventory_adjust-details-table').addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-row')) {
@@ -170,50 +160,42 @@
             });
 
             document.querySelector('#inventory_adjust-details-table').addEventListener('input', function(e) {
-                if (e.target.classList.contains('qty') || e.target.classList.contains('price') || e.target
-                    .classList
-                    .contains('discount')) {
+                if (e.target.classList.contains('qty') || e.target.classList.contains('price')) {
                     let row = e.target.closest('tr');
-                    let qty = parseFloat(row.querySelector('.qty').value) || 0;
-                    let price = parseFloat(row.querySelector('.price').value) || 0;
-                    // let discount = parseFloat(row.querySelector('.discount').value) || 0;
-                    let total = (qty * price);
-                    row.querySelector('.total').value = total.toFixed(0);
+                    let qty = parseFloat(removeFormatting(row.querySelector('.qty').value)) || 0;
+                    let price = parseFloat(removeFormatting(row.querySelector('.price').value)) || 0;
+                    let total = qty * price;
+                    row.querySelector('.total').value = formatCurrency(total); // Format total before displaying
                     updateTotals(); // Update totals when values change
                 }
             });
 
-            // Safely adding event listeners to 'taxes', 'freight', and 'discount' inputs
-            // const taxesInput = document.getElementById('taxes');
-            // const freightInput = document.getElementById('freight');
-            // const discountInput = document.getElementById('discount');
-            // const paidInput = document.getElementById('paid');
-
-            // if (taxesInput) {
-            //     taxesInput.addEventListener('input', updateTotals);
-            // }
-
-            // if (freightInput) {
-            //     freightInput.addEventListener('input', updateTotals);
-            // }
-
-            // if (discountInput) {
-            //     discountInput.addEventListener('input', updateTotals);
-            // }
-
-            // if (paidInput) {
-            //     paidInput.addEventListener('input', updateTotals);
-            // }
+            easyNumberSeparator({
+                selector: '.number-format',
+                separator: '{{ $setup->currency->thousand_separator }}',
+                decimalSeparator: '{{ $setup->currency->decimal_separator }}'
+            });
 
             updateTotals(); // Initial totals calculation
         });
+
+        function easyNumberSeparator({ selector, separator, decimalSeparator }) {
+            document.querySelectorAll(selector).forEach(input => {
+                input.addEventListener('input', function () {
+                    let value = this.value.replace(new RegExp(`\\${separator}`, 'g'), ''); // Remove thousand separator
+                    value = value.replace(new RegExp(`\\${decimalSeparator}`, 'g'), '.'); // Convert decimal separator to dot
+                    this.value = formatCurrency(value); // Format the value
+                    updateTotals(); // Update totals after formatting
+                });
+            });
+        }
     </script>
+
     <div class="container-xxl flex-grow-1 container-p-y">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a
-                        href="{{ route('inventory_adjust.index') }}">{{ ucwords(str_replace('_', ' ', 'inventory_adjust')) }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('inventory_adjust.index') }}">{{ ucwords(str_replace('_', ' ', 'inventory_adjust')) }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">@yield('title')</li>
             </ol>
         </nav>
@@ -232,13 +214,9 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="stock_adjust_id">
-                                                {{ ucwords(str_replace('_', ' ', 'stock_adjust')) }}
-                                            </label>
-                                            <select width="100%" id="stock_adjust_id"
-                                                name="stock_adjust_id" class="form-control select2" required>
-                                                <option disabled selected>Select a
-                                                    {{ ucwords(str_replace('_', ' ', 'stock_adjust')) }}</option>
+                                            <label for="stock_adjust_id">{{ ucwords(str_replace('_', ' ', 'stock_adjust')) }}</label>
+                                            <select width="100%" id="stock_adjust_id" name="stock_adjust_id" class="form-control select2" required>
+                                                <option disabled selected>Select a {{ ucwords(str_replace('_', ' ', 'stock_adjust')) }}</option>
                                                 @foreach ($stock_adjusts as $stock_adjust)
                                                     <option value="{{ $stock_adjust->id }}">{{ $stock_adjust->name }}</option>
                                                 @endforeach
@@ -248,20 +226,15 @@
 
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="warehouse_id">
-                                                {{ ucwords(str_replace('_', ' ', 'warehouse')) }}
-                                            </label>
-                                            <select width="100%" id="warehouse_id" name="warehouse_id"
-                                                class="form-control select2" required>
-                                                <option disabled selected>Select a
-                                                    {{ ucwords(str_replace('_', ' ', 'warehouse')) }}</option>
+                                            <label for="warehouse_id">{{ ucwords(str_replace('_', ' ', 'warehouse')) }}</label>
+                                            <select width="100%" id="warehouse_id" name="warehouse_id" class="form-control select2" required>
+                                                <option disabled selected>Select a {{ ucwords(str_replace('_', ' ', 'warehouse')) }}</option>
                                                 @foreach ($warehouses as $warehouse)
                                                     <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row mb-3">
@@ -273,7 +246,6 @@
                                                     <th class="col-material">Material</th>
                                                     <th class="col-qty">Qty</th>
                                                     <th class="col-price">Price</th>
-                                                    {{-- <th class="col-discount">Discount</th> --}}
                                                     <th class="col-total">Total</th>
                                                     <th>Action</th>
                                                 </tr>
@@ -281,36 +253,25 @@
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <select width="100%" name="details[0][material_id]"
-                                                            class="form-control select2" required
-                                                            onchange="fetchMaterialInfo(this)">
+                                                        <select width="100%" name="details[0][material_id]" class="form-control select2" required onchange="fetchMaterialInfo(this)">
                                                             <option disabled selected>Select a material</option>
                                                             @foreach ($materials as $material)
-                                                                <option value="{{ $material->id }}">{{ $material->name }}
-                                                                </option>
+                                                                <option value="{{ $material->id }}">{{ $material->name }}</option>
                                                             @endforeach
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <input type="number" name="details[0][qty]"
-                                                            class="form-control qty" step="0.01" required>
+                                                        <input type="text" name="details[0][qty]" class="form-control qty number-format" required>
                                                         <span class="unit"></span>
                                                     </td>
                                                     <td>
-                                                        <input type="number" name="details[0][price]"
-                                                            class="form-control price" step="0.01" required>
-                                                    </td>
-                                                    {{-- <td>
-                                                        <input type="number" name="details[0][discount]"
-                                                            class="form-control discount" step="0.01" required>
-                                                    </td> --}}
-                                                    <td>
-                                                        <input type="number" name="details[0][total]"
-                                                            class="form-control total" step="0.01" readonly>
+                                                        <input type="text" name="details[0][price]" class="form-control price number-format" required>
                                                     </td>
                                                     <td>
-                                                        <button type="button"
-                                                            class="btn btn-danger remove-row">Remove</button>
+                                                        <input type="text" name="details[0][total]" class="form-control total" readonly>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger remove-row">Remove</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -329,16 +290,14 @@
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td id="grand-total"><input type="number" name="grand_total" id="grand_total" class="form-control" readonly></td>
+                                                    <td><input type="text" name="grand_total" id="grand_total" class="form-control" readonly></td>
                                                 </tr>
                                             </tbody>
                                         </table>
 
                                         <br>
 
-                                        <button type="submit" class="btn btn-primary" id="submit-button"
-                                            disabled>Submit</button>
-
+                                        <button type="submit" class="btn btn-primary" id="submit-button" disabled>Submit</button>
                                     </div>
                                 </div>
                             </div>

@@ -86,9 +86,7 @@
                         name: 'amount',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {
@@ -96,9 +94,7 @@
                         name: 'spent',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {
@@ -106,9 +102,7 @@
                         name: 'remaining',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            return data === '-' ? '-' : parseFloat(data).toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return formatCurrency(data);
                         }
                     },
                     {

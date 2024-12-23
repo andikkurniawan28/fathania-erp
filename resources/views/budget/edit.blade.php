@@ -48,6 +48,7 @@
                                         @foreach($accounts as $account)
                                             <option value="{{ $account->id }}"
                                                 {{ $budget->account_id == $account->id ? 'selected' : '' }}>
+                                                {{ $account->id }} -
                                                 {{ $account->name }}
                                             </option>
                                         @endforeach
@@ -78,7 +79,7 @@
                                     {{ ucwords(str_replace('_', ' ', 'amount')) }}
                                 </label>
                                 <div class="col-sm-10">
-                                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount', $budget->amount) }}" required autofocus>
+                                    <input type="text" class="form-control number-format" id="amount" name="amount" value="{{ old('amount', $budget->amount) }}" required autofocus>
                                 </div>
                             </div>
 

@@ -25,8 +25,8 @@
                                 <th>{{ strtoupper(str_replace('_', ' ', 'id')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'name')) }}</th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'unit')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'sell')) }}</th>
-                                <th>{{ ucwords(str_replace('_', ' ', 'buy')) }}</th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'sell')) }}<sub>({{$setup->currency->symbol}})</sub></th>
+                                <th>{{ ucwords(str_replace('_', ' ', 'buy')) }}<sub>({{$setup->currency->symbol}})</sub></th>
                                 <th>{{ ucwords(str_replace('_', ' ', 'action')) }}</th>
                             </tr>
                         </thead>
@@ -70,11 +70,7 @@
                         name: 'sell_price',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            // Jika data null atau kosong, asumsikan sebagai 0
-                            const value = data ? parseFloat(data) : 0;
-                            return value.toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return data === null ? '-' : formatCurrency(data);
                         }
                     },
                     {
@@ -82,11 +78,7 @@
                         name: 'buy_price',
                         class: 'text-right',
                         render: function(data, type, row) {
-                            // Jika data null atau kosong, asumsikan sebagai 0
-                            const value = data ? parseFloat(data) : 0;
-                            return value.toLocaleString('en-US', {
-                                maximumFractionDigits: 0 // Menghapus angka di belakang koma
-                            });
+                            return data === null ? '-' : formatCurrency(data);
                         }
                     },
                     {
