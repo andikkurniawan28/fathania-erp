@@ -102,7 +102,7 @@
                         render: function(data, type, row) {
                             return `
                                 <div class="btn-group" role="group" aria-label="manage">
-                                    <a href="{{ url('invoice') }}/${row.id}" class="btn btn-info btn-sm">Show</a>
+                                    <a href="{{ url('invoice') }}/${row.id}" class="btn btn-info btn-sm" target="_blank">Show</a>
                                     <button type="button" class="btn btn-danger btn-sm delete-btn" data-id="${row.id}" data-name="${row.id}">Delete</button>
                                 </div>
                             `;
